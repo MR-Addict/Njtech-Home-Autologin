@@ -11,13 +11,19 @@ if not exist .\assets\profile.json (
     exit
 )
 
-:: Connect Njtech-Home Network twice
+:: Disable Manual proxy First
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f >
+
+:: Connect Njtech-Home Network 
 timeout 2 /nobreak > .\assets\echo.txt
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
 
 ::Run script
 python .\assets\autologin.py
+
+:: Stop Microsoft Edge browser
+taskkill /F /IM msedge.exe /T > echo.txt
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
