@@ -12,7 +12,7 @@ if not exist .\assets\profile.json (
 )
 
 :: Disable Manual proxy First
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f >
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f
 
 :: Connect Njtech-Home Network 
 timeout 2 /nobreak > .\assets\echo.txt
@@ -34,7 +34,7 @@ if errorlevel 1 (
     echo Connection success, ready to exit.
 )
 
-:: Disconnect and then connect WiFi network
+:: Disconnect and then connect WiFi anagin
 timeout 2 /nobreak > .\assets\echo.txt
 netsh wlan disconnect > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
