@@ -5,13 +5,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # load json file
-profile = json.load(open("./profile.json"))
+profile = json.load(open("./assets/profile.json"))
 provider = {
     "cmcc": '//span[@value="@cmcc"]',
     "telecom": '//span[@value="@telecom"]'
 }
 # initialize the Chrome driver
-driver = webdriver.Chrome("./chromedriver.exe")
+driver = webdriver.Chrome("./assets/chromedriver.exe")
 
 # head to Njtech login page
 driver.get("https://u.njtech.edu.cn/cas/login?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26response_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232")

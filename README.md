@@ -34,7 +34,6 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
 - assets
   - autologin.exe
   - chromedriver.exe
-  - echo.txt
   - profile.json
 
 ## 2. 使用

@@ -12,18 +12,27 @@ if not exist .\assets\profile.json (
 )
 
 :: Connect Njtech-Home Network twice
-netsh wlan connect name="Njtech-Home" interface="WLAN"
 timeout 2 /nobreak > .\assets\echo.txt
-netsh wlan connect name="Njtech-Home" interface="WLAN"
+netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
 
 ::Run script
-python .\assets\autologin.py
+python .\assets\autologin.py > .\assets\echo.txt
+
+:: Check WiFi connection
+ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
+
+if errorlevel 1 (
+    echo Connection failed, please try again.
+) else (
+    echo Connection success, ready to exit.
+)
 
 :: Disconnect and then connect WiFi network
-netsh wlan disconnect
 timeout 2 /nobreak > .\assets\echo.txt
-netsh wlan connect name="Njtech-Home" interface="WLAN"
+netsh wlan disconnect > .\assets\echo.txt
+timeout 2 /nobreak > .\assets\echo.txt
+netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
 
 :: Exit script
