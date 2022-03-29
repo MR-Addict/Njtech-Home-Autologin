@@ -24,6 +24,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
   "provider": "YOUR_PROVIDER"
 }
 ```
+
 其中运营商只能填两个，移动是`cmcc`，电信是`telecom`。
 
 第四步，chromedriver已经提前下载在`assets`文件夹中，可以直接跳过。
@@ -38,6 +39,6 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
 
 ## 2. 使用
 
-> 注意：本项目仅适用Windows，相信Linux的大佬们根本不需要这个脚本。
+> 注意：本项目仅适用Windows。
 
 双击`src`文件夹下的`autologin.bat`直接运行即可。
