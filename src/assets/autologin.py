@@ -32,7 +32,7 @@ driver.find_element(By.XPATH, provider[profile["provider"]]).click()
 # click login button
 driver.find_element(By.ID, "login").click()
 
-# wait util ewn page loaded
+# wait util new page loaded
 Element = WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable(driver.find_element(By.ID, "main-link"))
 )
