@@ -20,10 +20,10 @@ netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
 
 ::Run script
-python .\assets\autologin.py
+.\assets\dist\autologin.exe
 
 :: Stop Microsoft Edge browser
-taskkill /F /IM msedge.exe /T > echo.txt
+taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt

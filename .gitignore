@@ -1,2 +1,6 @@
 src/assets/profile.json
 src/assets/echo.txt
+src/assets/build
+src/assets/dist
+src/assets/__pycache__
+src/assets/autologin.spec
