@@ -1,8 +1,6 @@
 @echo off
 title Njtech-Home Network auto login script
 
-echo Trying to auto connect...
-
 :: Check profile.json whether exist
 if not exist .\assets\profile.json (
     echo profile.josn not exist, please rewrite it first at assets folder.
@@ -12,14 +10,16 @@ if not exist .\assets\profile.json (
 )
 
 :: Disable Manual proxy First
+echo Disable manual proxy.
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f
 
-:: Connect Njtech-Home Network 
-timeout 2 /nobreak > .\assets\echo.txt
+:: Connect Njtech-Home Network
+echo Connecting WiFi...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-timeout 2 /nobreak > .\assets\echo.txt
+timeout 4 /nobreak > .\assets\echo.txt
 
 ::Run script
+echo Running script...
 .\assets\dist\autologin.exe
 
 :: Check WiFi connection
@@ -28,18 +28,21 @@ ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
 if errorlevel 1 (
     echo Connection failed, please try again.
 ) else (
-    echo Connection success, ready to exit.
+    echo Connection succeeded.
 )
 
 :: Disconnect and then connect WiFi anagin
 timeout 2 /nobreak > .\assets\echo.txt
+echo Disconnecting WiFi...
 netsh wlan disconnect > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
+echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-timeout 2 /nobreak > .\assets\echo.txt
 
 :: Stop Microsoft Edge browser
+echo Stop Microsoft Edge browser.
 taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
+echo Finished, ready to exit.
 :: Exit script
 exit
