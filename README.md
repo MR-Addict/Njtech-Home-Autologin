@@ -1,4 +1,3 @@
-Hello
 # 南京工业大学校园网自动登录Python脚本Requests版
 
 ## 1. 准备
