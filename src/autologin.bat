@@ -5,8 +5,29 @@ title Njtech-Home Network auto login script
 if not exist .\assets\profile.json (
     echo profile.josn not exist, please rewrite it first at assets folder.
     echo. > .\assets\profile.json
-    pause
-    exit
+    goto end
+)
+
+:: Check WiFi connection
+ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
+if errorlevel 0 (
+    echo WiFi alrady connected, exit right now.
+    goto end
+)
+
+:: Check whether WiFi exist
+setlocal EnableDelayedExpansion
+set "TargetSSID=STAS-507"
+SET "count=0"
+for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') do (
+    if "%%a"=="SSID" set "SSID=%%c"
+    if "!TargetSSID!"=="!SSID!" (
+        set count=1
+    )
+)
+if %count%==0 (
+    echo Njtech-Home network not in range, exit right now.
+    goto end
 )
 
 :: Disable Manual proxy First
@@ -25,7 +46,6 @@ echo Running script...
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
-
 if errorlevel 1 (
     echo Connection failed, please try again.
 ) else (
@@ -43,6 +63,7 @@ timeout 2 /nobreak > .\assets\echo.txt
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 
-echo Finished, ready to exit.
 :: Exit script
+:end
+echo Finished, ready to exit.
 exit
