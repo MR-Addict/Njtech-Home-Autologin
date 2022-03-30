@@ -30,7 +30,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
 
 第四步，chromedriver已经提前下载在`assets`文件夹中，可以直接跳过。
 
-第五步，因为编译后的python文件运行起来更加快速，因此建议适用编译的文件，在`assets`文件夹下可以适用以下命令编译：
+第五步，因为编译后的python文件运行起来更加快速，因此建议使用编译的文件，在`assets`文件夹下可以使用以下命令编译：
 
 ```shell
 pyinstaller -F autologin.py
