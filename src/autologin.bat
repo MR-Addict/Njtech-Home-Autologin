@@ -12,11 +12,12 @@ if not exist .\assets\profile.json (
 :: Disable Manual proxy First
 echo Disable manual proxy.
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f
+timeout 5 /nobreak > .\assets\echo.txt
 
 :: Connect Njtech-Home Network
 echo Connecting WiFi...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-timeout 4 /nobreak > .\assets\echo.txt
+timeout 5 /nobreak > .\assets\echo.txt
 
 ::Run script
 echo Running script...
@@ -31,6 +32,9 @@ if errorlevel 1 (
     echo Connection succeeded.
 )
 
+:: Stop Microsoft Edge browser
+taskkill /F /IM msedge.exe /T > .\assets\echo.txt
+
 :: Disconnect and then connect WiFi anagin
 timeout 2 /nobreak > .\assets\echo.txt
 echo Disconnecting WiFi...
@@ -38,10 +42,6 @@ netsh wlan disconnect > .\assets\echo.txt
 timeout 2 /nobreak > .\assets\echo.txt
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-
-:: Stop Microsoft Edge browser
-echo Stop Microsoft Edge browser.
-taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
 echo Finished, ready to exit.
 :: Exit script

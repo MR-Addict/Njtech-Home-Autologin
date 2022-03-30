@@ -5,7 +5,7 @@
 - 安装python
 - 安装selenium包
 - 配置登录信息
-- 下载chromedriver
+- 下载msedgedriver
 - 编译python文件
 
 第一步，相信大家都是有装python的，这一步就直接跳过了，没有安装的请前往官网下载。
@@ -28,7 +28,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
 
 其中运营商只能填两个，移动是`cmcc`，电信是`telecom`。
 
-第四步，chromedriver已经提前下载在`assets`文件夹中，可以直接跳过。
+第四步，msedgedriver已经提前下载在`assets`文件夹中，可以直接跳过。
 
 第五步，因为编译后的python文件运行起来更加快速，因此建议使用编译的文件，在`assets`文件夹下可以使用以下命令编译：
 
@@ -41,7 +41,7 @@ pyinstaller -F autologin.py
 - autologin.bat
 - assets
   - autologin.py
-  - chromedriver.exe
+  - msedgedriver.exe
   - profile.json
   - dist
     - autologin.exe
