@@ -5,7 +5,8 @@
 - 安装python
 - 安装selenium包
 - 配置登录信息
-- 下载chromedriver(本仓库有此文件)
+- 下载chromedriver
+- 编译python文件
 
 第一步，相信大家都是有装python的，这一步就直接跳过了，没有安装的请前往官网下载。
 
@@ -29,16 +30,32 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ selenium
 
 第四步，chromedriver已经提前下载在`assets`文件夹中，可以直接跳过。
 
+第五步，因为编译后的python文件运行起来更加快速，因此建议适用编译的文件，在`assets`文件夹下可以适用以下命令编译：
+
+```shell
+pyinstaller -F autologin.py
+```
+
 最后，你的文件树应该如下：
 
 - autologin.bat
 - assets
-  - autologin.exe
+  - autologin.py
   - chromedriver.exe
   - profile.json
+  - dist
+    - autologin.exe
 
 ## 2. 使用
 
-> 注意：本项目仅适用Windows。
+> 注意：本项目仅适用Windows
 
 双击`src`文件夹下的`autologin.bat`直接运行即可。
+
+## 3. 其他功能
+
+- [x] 自动登录
+- [x] 开机自启
+- [x] 联网前先关闭电脑的手动代理
+- [x] 登录结束后检测网络是否连接成功
+- [x] 关闭跳转的Microsoft Edge浏览器
