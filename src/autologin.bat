@@ -33,7 +33,6 @@ if %count%==0 (
 :: Disable Manual proxy First
 echo Disable manual proxy.
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f
-timeout 5 /nobreak > .\assets\echo.txt
 
 :: Connect Njtech-Home Network
 echo Connecting WiFi...
