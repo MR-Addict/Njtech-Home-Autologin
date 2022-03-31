@@ -78,16 +78,12 @@ exit
 :: Functions
 
 :CheckWiFiConnection
-ping u.njtech.edu.cn -n 1 -w 1000 > .\assets\echo.txt
-if not errorlevel 1 (
-    SET %~1=1
-) else (
-    SET %~1=0
-)
+ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
+if not errorlevel 1 ( SET %~1=1 ) else ( SET %~1=0 )
 exit /b 0
 
 :WaitWiFiConnection
-:while
-call :CheckWiFiConnection isConnect
-if %isConnect%==0 goto while
+:loop
+ping u.njtech.edu.cn -n 1 -w 1000 > .\assets\echo.txt
+if errorlevel 1 ( goto loop )
 exit /b 0
