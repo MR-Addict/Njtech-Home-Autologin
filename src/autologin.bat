@@ -5,14 +5,14 @@ title Njtech-Home Network auto login script
 if not exist .\assets\profile.json (
     echo profile.josn not exist, please rewrite it first at assets folder.
     echo. > .\assets\profile.json
-    goto end
+    exit
 )
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
 if not errorlevel 1 (
     echo WiFi alrady connected, exit right now.
-    goto end
+    exit
 )
 
 :: Check whether WiFi exist
@@ -27,7 +27,7 @@ for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') 
 )
 if %count%==0 (
     echo Njtech-Home network not in range, exit right now.
-    goto end
+    exit
 )
 
 :: Disable Manual proxy First
@@ -43,7 +43,7 @@ timeout 4 /nobreak > .\assets\echo.txt
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
 if not errorlevel 1 (
     echo WiFi alrady connected, exit right now.
-    goto end
+    exit
 )
 
 ::Run script
@@ -54,10 +54,14 @@ echo Running script...
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
 if errorlevel 1 (
     echo Connection failed, please try again.
-    goto end
+    exit
 ) else (
     echo Connection succeeded.
 )
+
+:: Stop Microsoft Edge browser
+echo Exit redirectting browser...
+taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
 :: Disconnect and then connect WiFi again
 timeout 1 /nobreak > .\assets\echo.txt
@@ -66,10 +70,6 @@ netsh wlan disconnect > .\assets\echo.txt
 timeout 1 /nobreak > .\assets\echo.txt
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-
-:end
-:: Stop Microsoft Edge browser
-taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
 :: Exit script
 echo All done, ready to exit.
