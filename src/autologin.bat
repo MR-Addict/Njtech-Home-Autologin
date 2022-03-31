@@ -1,5 +1,5 @@
 @echo off
-title Njtech-Home Network auto login script
+title Njtech-Home Autologin Script
 
 :: Check profile.json whether exist
 if not exist .\assets\profile.json (
@@ -8,25 +8,25 @@ if not exist .\assets\profile.json (
     exit
 )
 
-:: Check WiFi connection
-ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
-if not errorlevel 1 (
-    echo WiFi alrady connected, exit right now.
+:: Check whether WiFi is connected
+call :CheckWiFiConnection isConnect
+if %isConnect%==1 (
+    echo WiFi already connected, exit right now.
     exit
 )
 
-:: Check whether WiFi exist
+:: Check whether Njtech-Home WiFi exist
 setlocal EnableDelayedExpansion
 set "TargetSSID=Njtech-Home"
-SET "count=0"
+SET "isExist=0"
 for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') do (
     if "%%a"=="SSID" set "SSID=%%c"
     if "!TargetSSID!"=="!SSID!" (
-        set count=1
+        set isExist=1
     )
 )
-if %count%==0 (
-    echo Njtech-Home network not in range, exit right now.
+if %isExist%==0 (
+    echo Njtech-Home not in range, exit right now.
     exit
 )
 
@@ -37,11 +37,11 @@ REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v Pr
 :: Connect Njtech-Home Network
 echo Connecting WiFi...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-timeout 4 /nobreak > .\assets\echo.txt
+call :WaitWiFiConnection
 
-:: Check WiFi connection
-ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
-if not errorlevel 1 (
+:: Check whether WiFi is connected
+call :CheckWiFiConnection isConnect
+if %isConnect%==1 (
     echo WiFi alrady connected, exit right now.
     exit
 )
@@ -54,13 +54,13 @@ taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 echo Running script...
 .\assets\dist\autologin.exe
 
-:: Check WiFi connection
-ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
-if errorlevel 1 (
+:: Check whether WiFi is connected
+call :CheckWiFiConnection isConnect
+if %isConnect%==1 (
+    echo Connection succeeded.
+) else (
     echo Connection failed, please try again.
     exit
-) else (
-    echo Connection succeeded.
 )
 
 :: Disconnect and then connect WiFi again
@@ -74,3 +74,20 @@ netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 :: Exit script
 echo All done, ready to exit.
 exit
+
+:: Functions
+
+:CheckWiFiConnection
+ping u.njtech.edu.cn -n 1 -w 1000 > .\assets\echo.txt
+if not errorlevel 1 (
+    SET %~1=1
+) else (
+    SET %~1=0
+)
+exit /b 0
+
+:WaitWiFiConnection
+:while
+call :CheckWiFiConnection isConnect
+if %isConnect%==0 goto while
+exit /b 0
