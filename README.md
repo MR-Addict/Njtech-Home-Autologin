@@ -31,7 +31,6 @@ pyinstaller -F autologin.py
 - autologin.bat
 - assets
   - autologin.py
-  - msedgedriver.exe
   - profile.json
   - dist
     - autologin.exe
