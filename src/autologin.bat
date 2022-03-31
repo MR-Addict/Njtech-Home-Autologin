@@ -37,7 +37,7 @@ REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v Pr
 :: Connect Njtech-Home Network
 echo Connecting WiFi...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
-timeout 5 /nobreak > .\assets\echo.txt
+timeout 4 /nobreak > .\assets\echo.txt
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
@@ -60,10 +60,10 @@ if errorlevel 1 (
 )
 
 :: Disconnect and then connect WiFi again
-timeout 2 /nobreak > .\assets\echo.txt
+timeout 1 /nobreak > .\assets\echo.txt
 echo Disconnecting WiFi...
 netsh wlan disconnect > .\assets\echo.txt
-timeout 2 /nobreak > .\assets\echo.txt
+timeout 1 /nobreak > .\assets\echo.txt
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 
