@@ -10,14 +10,14 @@ if not exist .\assets\profile.json (
 
 :: Check WiFi connection
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
-if errorlevel 0 (
+if not errorlevel 1 (
     echo WiFi alrady connected, exit right now.
     goto end
 )
 
 :: Check whether WiFi exist
 setlocal EnableDelayedExpansion
-set "TargetSSID=STAS-507"
+set "TargetSSID=Njtech-Home"
 SET "count=0"
 for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') do (
     if "%%a"=="SSID" set "SSID=%%c"
@@ -40,6 +40,13 @@ echo Connecting WiFi...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 timeout 5 /nobreak > .\assets\echo.txt
 
+:: Check WiFi connection
+ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
+if not errorlevel 1 (
+    echo WiFi alrady connected, exit right now.
+    goto end
+)
+
 ::Run script
 echo Running script...
 .\assets\dist\autologin.exe
@@ -48,14 +55,12 @@ echo Running script...
 ping www.baidu.com -n 1 -w 1000 > .\assets\echo.txt
 if errorlevel 1 (
     echo Connection failed, please try again.
+    goto end
 ) else (
     echo Connection succeeded.
 )
 
-:: Stop Microsoft Edge browser
-taskkill /F /IM msedge.exe /T > .\assets\echo.txt
-
-:: Disconnect and then connect WiFi anagin
+:: Disconnect and then connect WiFi again
 timeout 2 /nobreak > .\assets\echo.txt
 echo Disconnecting WiFi...
 netsh wlan disconnect > .\assets\echo.txt
@@ -63,7 +68,10 @@ timeout 2 /nobreak > .\assets\echo.txt
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" > .\assets\echo.txt
 
-:: Exit script
 :end
-echo Finished, ready to exit.
+:: Stop Microsoft Edge browser
+taskkill /F /IM msedge.exe /T > .\assets\echo.txt
+
+:: Exit script
+echo All done, ready to exit.
 exit
