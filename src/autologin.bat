@@ -46,6 +46,10 @@ if not errorlevel 1 (
     exit
 )
 
+:: Stop Microsoft Edge browser
+echo Exit redirectting browser...
+taskkill /F /IM msedge.exe /T > .\assets\echo.txt
+
 ::Run script
 echo Running script...
 .\assets\dist\autologin.exe
@@ -58,10 +62,6 @@ if errorlevel 1 (
 ) else (
     echo Connection succeeded.
 )
-
-:: Stop Microsoft Edge browser
-echo Exit redirectting browser...
-taskkill /F /IM msedge.exe /T > .\assets\echo.txt
 
 :: Disconnect and then connect WiFi again
 timeout 1 /nobreak > .\assets\echo.txt
