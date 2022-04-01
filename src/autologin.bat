@@ -1,7 +1,7 @@
 @echo off
 title Njtech-Home Autologin Script
 
-:: Check profile.json whether exist
+:: Check whether profile.json exist
 if not exist .\assets\profile.json (
     echo profile.josn not exist, please rewrite it first at assets folder.
     echo. > .\assets\profile.json
@@ -11,7 +11,7 @@ if not exist .\assets\profile.json (
 :: Check whether WiFi is connected
 call :CheckWiFiConnection isConnect
 if %isConnect%==1 (
-    echo WiFi already connected, exit right now.
+    echo WiFi is already connected, exit right now.
     exit
 )
 
@@ -26,7 +26,7 @@ for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') 
     )
 )
 if %isExist%==0 (
-    echo Njtech-Home not in range, exit right now.
+    echo Njtech-Home is not in range, exit right now.
     exit
 )
 
@@ -42,7 +42,7 @@ call :WaitWiFiConnection
 :: Check whether WiFi is connected
 call :CheckWiFiConnection isConnect
 if %isConnect%==1 (
-    echo WiFi alrady connected, exit right now.
+    echo WiFi is already connected, exit right now.
     exit
 )
 
@@ -55,17 +55,16 @@ call :CheckWiFiConnection isConnect
 if %isConnect%==1 (
     echo Connection succeeded.
 ) else (
-    echo Connection failed, please try again.
+    echo Connection failed, please try again manually.
     exit
 )
-
-:: echo beep
-echo 
 
 :: Disconnect and then connect WiFi again
 timeout 1 /nobreak >nul 2>nul
 echo Disconnecting WiFi...
 netsh wlan disconnect >nul 2>nul
+:: echo beep sound effect
+echo 
 timeout 1 /nobreak >nul 2>nul
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" >nul 2>nul

@@ -33,7 +33,7 @@ if errorlevel 1 (
 
     echo Trying to compile python file, please wait...
     pyinstaller -F .\autologin.py >nul 2>nul
-    echo Configuration all done, you can exit now.
-    pause
+    echo Configuration all done, press enter to exit.
+    pause >nul 2>nul
     exit
 )
