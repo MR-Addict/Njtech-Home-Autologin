@@ -1,4 +1,6 @@
-@echo off
+@if (@CodeSection == @Batch) @then
+@echo off & setlocal
+setlocal EnableDelayedExpansion
 title Njtech-Home Autologin Script
 
 :: Check whether profile.json exist
@@ -16,7 +18,6 @@ if %isConnect%==1 (
 )
 
 :: Check whether Njtech-Home WiFi exist
-setlocal EnableDelayedExpansion
 set "TargetSSID=Njtech-Home"
 SET "isExist=0"
 for /f "tokens=1,2,* delims=: " %%a in ('netsh wlan show networks mode^=bssid') do (
@@ -69,9 +70,10 @@ timeout 1 /nobreak >nul 2>nul
 echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" >nul 2>nul
 
-:: Stop Microsoft Edge browser
-echo Stop Microsoft Edge browser
-taskkill /F /IM msedge.exe /T > >nul 2>nul
+:: Read default browser from JSON file and kill it
+for /f "Tokens=* Delims=" %%x in (.\assets\profile.json) do set JSON=!JSON!%%x
+for /f "delims=" %%I in ('cscript /nologo /e:JScript "%~f0"') do set "%%~I"
+taskkill /F /IM %JSON[browser]%.exe /T >nul 2>nul 
 
 :: Exit script
 echo All done, ready to exit.
@@ -89,3 +91,12 @@ exit /b 0
 ping u.njtech.edu.cn -n 1 -w 1000 >nul 2>nul
 if errorlevel 1 ( goto loop )
 exit /b 0
+
+:: JScript JSON parser
+@end // end Batch / begin JScript hybrid code
+var htmlfile = WSH.CreateObject('htmlfile'),
+    txt = WSH.CreateObject('Wscript.Shell').Environment('process').Item('JSON');
+htmlfile.write('<meta http-equiv="x-ua-compatible" content="IE=9" />');
+var obj = htmlfile.parentWindow.JSON.parse(txt);
+htmlfile.close();
+for (var i in obj) WSH.Echo('JSON[' + i + ']=' + obj[i]);
