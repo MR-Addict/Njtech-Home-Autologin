@@ -4,10 +4,6 @@ title Njtech-Home Autologin Guide Script
 :: Change path to asssets folder
 cd .\assets\
 
-:: Set Njtech-Home connect manually
-echo Set Njtech-Home connect manually.
-netsh wlan set profileparameter name=Njtech-Home connectionmode=manual >nul 2>nul
-
 :: Input profile information
 set /p username=Input your username:
 set /p password=Input your passwrod:
@@ -17,6 +13,10 @@ echo   "username":"%username%",>> .\profile.json
 echo   "password":"%password%",>> .\profile.json
 echo   "provider":"%provider%">> .\profile.json
 echo }>> .\profile.json
+
+:: Set Njtech-Home connect manually
+echo Set Njtech-Home connect manually.
+netsh wlan set profileparameter name=Njtech-Home connectionmode=manual >nul 2>nul
 
 :: Compile python file
 WHERE python >nul 2>nul
