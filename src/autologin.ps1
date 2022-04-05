@@ -1,13 +1,92 @@
+# 1. Check profile file
+Write-Host "Loading profile..."
+if (!(Test-Path -Path .\profile.json)) {
+    Write-Host "Profile not exist, exit right now."
+    exit
+}
+
+# 2. Check WiFi Connection
+Write-Host "Checking whether you are connected..."
+if (Test-NetConnection www.baidu.com -WarningAction SilentlyContinue -InformationLevel Quiet) {
+    Write-Host "WiFi already connected, exit right now."
+    exit
+}
+
+# 3. Check whether Njtech-Home exists
+Write-Host "Checking whether Njtech-Home available..."
+function isNjtechExist {
+    netsh wlan show networks | ForEach-Object {
+        if ($_ -match '^SSID (\d+) : (.*)$') {
+            if ($matches[2].trim() -ceq "Njtech-Home") {
+                return $true
+            }
+        }
+    }
+    return $false
+}
+if (!(isNjtechExist)) {
+    Write-Host "Njtech-Home not available, exit right now."
+    exit
+}
+
+# 4. Disable Proxy
+Write-Host "Disabling system proxy..."
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
+
+# 5. Connect Njtech-Home
+Write-Host "Loading Njtech-Home network..."
+netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
+while (!(Test-NetConnection u.njtech.edu.cn -WarningAction SilentlyContinue -InformationLevel Quiet)) {}
+
+# 6. Post data to remote host
+# 6.1 Load profile information
+$MyProfile = Get-Content profile.json -Raw | ConvertFrom-Json
+
+# 6.2 Provider hash table
+$provider = @{
+    "cmcc"    = "中国移动"
+    "telecom" = "中国电信"
+}
+
+# 6.3 Get and post URL
 $geturl = "https://u.njtech.edu.cn/cas/login?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26s_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232"
 $posturl = "https://u.njtech.edu.cn/cas/login;jsessionid=65B9C37DFC296E1DE315076359292F44.TomcatB?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26s_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232"
+
+# 6.4 Send post data
+Write-Host "Sending your profile to host..."
 $r = Invoke-WebRequest -Uri $geturl -SessionVariable s
 $form = $r.Forms[0]
-$form.Fields["username"] = "202021007063"
-$form.Fields["password"] = "@cjw20001212"
-$form.Fields["channelshow"] = "中国电信"
-$form.Fields["channel"] = "@telecom"
+$form.Fields["username"] = $MyProfile.username
+$form.Fields["password"] = $MyProfile.password
+$form.Fields["channelshow"] = $provider[$MyProfile.provider]
+$form.Fields["channel"] = '@' + $MyProfile.provider
 $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
-Write-Host $r.Content
-Write-Host $r.StatusCode
-ping baidu.com
-pause
+
+# 7. Check WiFi Connection
+Write-Host "Checking WiFi connection..."
+if (Test-NetConnection www.baidu.com -WarningAction SilentlyContinue -InformationLevel Quiet) {
+    Write-Host "WiFi connection succeeded."
+}
+else {
+    Write-Host "WiFi Login failed, exit right now."
+    exit
+}
+
+# 8. Disconnect and connect WiFi
+Write-Host "Disconnecting WiFi..."
+Start-Sleep 1
+netsh wlan disconnect | Out-Null
+1..2 | ForEach-Object { [console]::beep(2000, 100) }
+Write-Host "Connecting WiFi again..."
+Start-Sleep 1
+netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
+
+# 9. Stop redirected browser
+Write-Host "Stopping redirected browser..."
+if ((Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
+    Stop-Process -Name $MyProfile.browser
+}
+
+# 10. Exit Script
+Write-Host "All done, exit right now."
+exit
