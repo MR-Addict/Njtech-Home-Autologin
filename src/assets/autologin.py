@@ -27,6 +27,8 @@ r = s.get(geturl)
 soup = BeautifulSoup(r.content, "html.parser")
 lt = soup.find('input', attrs={'name': 'lt'})['value']
 execution = soup.find('input', attrs={'name': 'execution'})['value']
+_eventId = soup.find('input', attrs={'name': '_eventId'})['value']
+login = soup.find('input', attrs={'name': 'login'})['value']
 # load payload
 payload = {
     'username': profile["username"],
@@ -35,8 +37,8 @@ payload = {
     "channel": '@'+profile['provider'],
     'lt': lt,
     'execution': execution,
-    '_eventId': 'submit',
-    'login': '登录',
+    '_eventId': _eventId,
+    'login': login,
 }
 # post data
 r = s.post(posturl, data=payload)
