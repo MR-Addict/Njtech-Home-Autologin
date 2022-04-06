@@ -103,7 +103,7 @@ netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 
 # 10. Stop redirected browser
 Write-Host "Stopping redirected browser..."
-if ((Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
+if ($MyProfile.browser -and (Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
     Stop-Process -Name $MyProfile.browser
 }
 
