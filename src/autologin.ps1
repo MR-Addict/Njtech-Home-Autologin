@@ -1,6 +1,6 @@
 # 1. Check profile file
 Write-Host "Loading profile..."
-if (!(Test-Path -Path .\profile.json)) {
+if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
     Write-Host "Profile not exist, exit right now."
     exit
 }
