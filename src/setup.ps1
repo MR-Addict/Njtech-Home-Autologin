@@ -1,3 +1,4 @@
+# Profile configuration
 Write-Host "Creating your profile..."
 $username = Read-Host -Prompt "Input your username"
 $password = Read-Host -Prompt "Input your password"
@@ -11,22 +12,22 @@ $customProfile = @{
 }
 $customProfile | ConvertTo-Json | Out-File profile.json -Encoding utf8
 Write-Host "Your profile has created!"
+Write-Host ($customProfile | ConvertTo-Json)
 
 # Set poweshell executionpolicy
-try {
-    if (!((Get-ExecutionPolicy).ToString() -eq "Restricted")) {
-        Set-ExecutionPolicy RemoteSigned
-    }
-}
-catch {
-    Write-Host "You do not have enough rights, please open this as administrator"
+$currentScriptUser = [Security.Principal.WindowsIdentity]::GetCurrent();
+if (!(New-Object Security.Principal.WindowsPrincipal $currentScriptUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
+    Write-Host "You do not have enough rights, please run this script as administrator"
     Pause
     exit
+}
+if ((Get-ExecutionPolicy).ToString() -eq "Restricted") {
+    Set-ExecutionPolicy RemoteSigned
 }
 
 Write-Host "Configurating autologin tasks..."
 #Create taskname
-$taskName = "Njtech-Home-Autologin"
+$taskName = "Njtech-Home-Autologin-Script"
 # Create Triggers
 $stateChangeTrigger = Get-CimClass -Namespace ROOT\Microsoft\Windows\TaskScheduler -ClassName MSFT_TaskSessionStateChangeTrigger
 $onUnlockTrigger = New-CimInstance -CimClass $stateChangeTrigger -Property @{ StateChange = 8 } -ClientOnly
@@ -43,7 +44,7 @@ else {
     Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers
 }
 
+# Exit set up script
 Write-Host "Task created, press any to exit"
-
 [console]::ReadKey() | Out-Null
 exit

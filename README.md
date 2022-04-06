@@ -19,7 +19,7 @@
 - 配置Windows Powershell权限
 - 配置登录信息
 
-第一步，由于Windows默认Windows Powershell没有权限运行脚本，你可以通过以下命令查看你的Windows Powershell的运行权限：
+第一步，由于Windows默认Windows Powershell没有权限运行脚本，你可以通过以下命令查看你的Windows Powershell的权限：
 
 ```ps1
 Get-ExecutionPolicy
@@ -67,17 +67,17 @@ Set-ExecutionPolicy RemoteSigned
 }
 ```
 
-最后，你的文件结构因该如下：
+最后，你的文件结构应该如下：
 
 - src
   - autologin.ps1
   - setup.ps1
   - profile.json
 
-> 注意：为了方便大家使用，在`src`目录下有一个`setup.ps1`的文件，双击运行后跟着指示操作就可以完成相关配置了，同时`setup`也本可以帮助你直接配置开机自启以及休眠启动等任务，所以你最好通过管理员权限打开本脚本。
+> 注意：为了方便大家使用，在`src`目录下有一个`setup.ps1`的文件，双击运行后跟着指示操作就可以完成登录信息的配置。同时`setup`脚本也可以帮你自动配置开机自启以及休眠启动等任务，但是需要管理员权限才能实现自动配置。
 
 ## 3. 使用
 
-双击`src`文件夹下的`autologin.ps1`直接运行即可。
+双击`src`文件夹下的`autologin.ps1`直接运行即可。如果你配置了开机自启和休眠结束自启，那么脚本也是会自动运行的。
 
-> 注意：由于本项目是使用Powershell脚本，而目前最新的`Powershell 7`版本是一个支持跨平台的脚本语言，因此理论上可以在任何系统上使用。
+> 注意：由于本项目是使用Powershell脚本，而目前最新的`Powershell 7.0`版本是一个支持跨平台的脚本语言，因此理论上可以在任何系统上使用。同时本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况。

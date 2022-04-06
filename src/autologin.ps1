@@ -5,9 +5,20 @@ if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
     exit
 }
 
+function checkWiFiConnection {
+    $timeout = New-TimeSpan -Seconds 1
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+    do {
+        if (Test-NetConnection "www.baidu.com" -WarningAction SilentlyContinue -InformationLevel Quiet) {
+            return $true
+        }
+    } while ($stopWatch.elapsed -lt $timeout)
+    return $false
+}
+
 # 2. Check WiFi Connection
 Write-Host "Checking whether you are connected..."
-if (Test-Connection -ComputerName www.baidu.com -Count 1 -Delay 1 -Quiet) {
+if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
     exit
 }
@@ -31,7 +42,7 @@ if (!(isNjtechExist)) {
 
 # 4. Disable Proxy
 Write-Host "Disabling system proxy..."
-if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq 1) {
+if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
     $global:isEnableProxy = $true
 }
@@ -43,7 +54,7 @@ while (!(Test-NetConnection u.njtech.edu.cn -WarningAction SilentlyContinue -Inf
 
 # 6. Check WiFi Connection
 Write-Host "Checking whether you are connected..."
-if (Test-Connection -ComputerName www.baidu.com -Count 1 -Delay 1 -Quiet) {
+if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
     exit
 }
@@ -74,7 +85,7 @@ $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
 
 # 8. Check WiFi Connection
 Write-Host "Checking WiFi connection..."
-if (Test-Connection -ComputerName www.baidu.com -Count 1 -Delay 1 -Quiet) {
+if (checkWiFiConnection) {
     Write-Host "WiFi connection succeeded."
 }
 else {
@@ -84,11 +95,10 @@ else {
 
 # 9. Disconnect and connect WiFi
 Write-Host "Disconnecting WiFi..."
-Start-Sleep 1
+Start-Sleep -Seconds 1
 netsh wlan disconnect | Out-Null
-1..2 | ForEach-Object { [console]::beep(2000, 100) }
 Write-Host "Connecting WiFi again..."
-Start-Sleep 1
+Start-Sleep -Seconds 1
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 
 # 10. Stop redirected browser
@@ -98,10 +108,12 @@ if ((Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.b
 }
 
 # 11. Enable proxy again
+Write-Host "Enabling system proxy..."
 if ($isEnableProxy) {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
 }
 
 # 12. Exit Script
+1..2 | ForEach-Object { [console]::beep(2000, 100) }
 Write-Host "All done, exit right now."
 exit
