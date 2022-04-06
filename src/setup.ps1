@@ -1,3 +1,11 @@
+# Ask for administrator privilege
+if (-Not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
+        Start-Process PowerShell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"cd '$pwd'; & '$PSCommandPath';`"";
+        Exit;
+    }
+}
+
 # Profile configuration
 Write-Host "Creating your profile..."
 $username = Read-Host -Prompt "Input your username"
@@ -15,13 +23,6 @@ Write-Host "Your profile has created!"
 Write-Host ($customProfile | ConvertTo-Json)
 
 # Set poweshell executionpolicy
-$currentScriptUser = [Security.Principal.WindowsIdentity]::GetCurrent();
-if (!(New-Object Security.Principal.WindowsPrincipal $currentScriptUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
-    Write-Host "You do not have enough rights, please run this script as administrator"
-    Pause
-    exit
-}
-
 Write-Host "Configurating autologin tasks..."
 #Create taskname
 $taskName = "Njtech-Home-Autologin-Script"
