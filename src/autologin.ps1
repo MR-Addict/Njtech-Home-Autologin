@@ -114,6 +114,5 @@ if ($isEnableProxy) {
 }
 
 # 12. Exit Script
-1..2 | ForEach-Object { [console]::beep(2000, 100) }
 Write-Host "All done, exit right now."
 exit

@@ -21,9 +21,6 @@ if (!(New-Object Security.Principal.WindowsPrincipal $currentScriptUser).IsInRol
     Pause
     exit
 }
-if ((Get-ExecutionPolicy).ToString() -eq "Restricted") {
-    Set-ExecutionPolicy RemoteSigned
-}
 
 Write-Host "Configurating autologin tasks..."
 #Create taskname
@@ -34,14 +31,14 @@ $onUnlockTrigger = New-CimInstance -CimClass $stateChangeTrigger -Property @{ St
 $logonTrigger = New-ScheduledTaskTrigger -AtLogOn
 $taskTriggers = $onUnlockTrigger, $logonTrigger
 # Create action
-$taskAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-File $PSScriptRoot\autologin.ps1"
+$taskAction = New-ScheduledTaskAction -Execute "powershell" -Argument "-File `"$PSScriptRoot\autologin.ps1`""
 # Register scheduled task
 Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue -OutVariable isTaskExist
 if ($isTaskExist) {
-    Set-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $taskTriggers
+    Set-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $taskTriggers -ContinueIfGoingOnBattery
 }
 else {
-    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers
+    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers -ContinueIfGoingOnBattery
 }
 
 # Exit set up script
