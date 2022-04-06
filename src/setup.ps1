@@ -30,15 +30,17 @@ $stateChangeTrigger = Get-CimClass -Namespace ROOT\Microsoft\Windows\TaskSchedul
 $onUnlockTrigger = New-CimInstance -CimClass $stateChangeTrigger -Property @{ StateChange = 8 } -ClientOnly
 $logonTrigger = New-ScheduledTaskTrigger -AtLogOn
 $taskTriggers = $onUnlockTrigger, $logonTrigger
+# Create task optional settings
+$taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
 # Create action
 $taskAction = New-ScheduledTaskAction -Execute "powershell" -Argument "-File `"$PSScriptRoot\autologin.ps1`""
 # Register scheduled task
 Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue -OutVariable isTaskExist
 if ($isTaskExist) {
-    Set-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $taskTriggers -ContinueIfGoingOnBattery
+    Set-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $taskTriggers -Settings $taskSettings
 }
 else {
-    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers -ContinueIfGoingOnBattery
+    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers -Settings $taskSettings
 }
 
 # Exit set up script
