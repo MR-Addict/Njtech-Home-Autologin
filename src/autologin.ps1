@@ -2,7 +2,7 @@
 Write-Host "Loading profile..."
 if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
     Write-Host "Profile not exist, exit right now."
-    exit
+    Exit
 }
 
 function checkWiFiConnection {
@@ -20,7 +20,7 @@ function checkWiFiConnection {
 Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
-    exit
+    Exit
 }
 
 # 3. Check whether Njtech-Home exists
@@ -37,7 +37,7 @@ function isNjtechExist {
 }
 if (!(isNjtechExist)) {
     Write-Host "Njtech-Home not available, exit right now."
-    exit
+    Exit
 }
 
 # 4. Disable Proxy
@@ -56,7 +56,7 @@ while (!(Test-Connection "u.njtech.edu.cn" -Count 1 -Delay 1 -Quiet)) {}
 Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
-    exit
+    Exit
 }
 
 # 7. Post data to remote host
@@ -90,7 +90,7 @@ if (checkWiFiConnection) {
 }
 else {
     Write-Host "WiFi Login failed, exit right now."
-    exit
+    Exit
 }
 
 # 9. Disconnect and connect WiFi
@@ -115,4 +115,4 @@ if ($isEnableProxy) {
 
 # 12. Exit Script
 Write-Host "All done, exit right now."
-exit
+Exit
