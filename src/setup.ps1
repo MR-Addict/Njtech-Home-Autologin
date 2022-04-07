@@ -40,7 +40,7 @@ if ($choice -ne "N") {
     # Create task optional settings
     $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -WakeToRun
     # Create action
-    $taskAction = New-ScheduledTaskAction -Execute "cmd" -Argument "/c `"$PSScriptRoot\autologin.ps1`""
+    $taskAction = New-ScheduledTaskAction -Execute "cmd" -Argument "/c powershell -Version 5.1 -ExecutionPolicy RemoteSigned -File `"$PSScriptRoot\autologin.ps1`""
     # Description
     $taskDescription = "This is a script for autologin Njtech-Home Network, written by Mr-Addict. You can find more information on my github: https://github.com/MR-Addict/Njtech-Home-Autologin"
     if ($choice -eq 'Y') {
