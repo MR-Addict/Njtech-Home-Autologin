@@ -9,7 +9,7 @@ function checkWiFiConnection {
     $timeout = New-TimeSpan -Seconds 1
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
     do {
-        if (Test-NetConnection "www.baidu.com" -WarningAction SilentlyContinue -InformationLevel Quiet) {
+        if (Test-Connection "www.baidu.com" -Count 1 -Delay 1 -Quiet) {
             return $true
         }
     } while ($stopWatch.elapsed -lt $timeout)
@@ -50,7 +50,7 @@ if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet
 # 5. Connect Njtech-Home
 Write-Host "Loading Njtech-Home network..."
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
-while (!(Test-NetConnection u.njtech.edu.cn -WarningAction SilentlyContinue -InformationLevel Quiet)) {}
+while (!(Test-Connection "u.njtech.edu.cn" -Count 1 -Delay 1 -Quiet)) {}
 
 # 6. Check WiFi Connection
 Write-Host "Checking whether you are connected..."
