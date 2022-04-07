@@ -32,16 +32,18 @@ $onUnlockTrigger = New-CimInstance -CimClass $stateChangeTrigger -Property @{ St
 $logonTrigger = New-ScheduledTaskTrigger -AtLogOn
 $taskTriggers = $onUnlockTrigger, $logonTrigger
 # Create task optional settings
-$taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
+$taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -WakeToRun
 # Create action
 $taskAction = New-ScheduledTaskAction -Execute "powershell" -Argument "-File `"$PSScriptRoot\autologin.ps1`""
+# Description
+$taskDescription = "This is a script for autologin Njtech-Home Network, written by Mr-Addict. You can find more information on my github: https://github.com/MR-Addict/Njtech-Home-Autologin"
 # Register scheduled task
 Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue -OutVariable isTaskExist
 if ($isTaskExist) {
     Set-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $taskTriggers -Settings $taskSettings
 }
 else {
-    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers -Settings $taskSettings
+    Register-ScheduledTask -TaskName $taskName  -Action $taskAction -Trigger $taskTriggers -Settings $taskSettings -Description $taskDescription
 }
 
 # Exit set up script
