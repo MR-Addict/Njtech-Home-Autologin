@@ -61,7 +61,7 @@ if (checkWiFiConnection) {
 
 # 7. Post data to remote host
 # 7.1 Load profile information
-$MyProfile = Get-Content profile.json -Raw | ConvertFrom-Json
+$MyProfile = Get-Content $PSScriptRoot\profile.json -Raw | ConvertFrom-Json
 
 # 7.2 Provider hash table
 $provider = @{
