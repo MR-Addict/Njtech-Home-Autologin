@@ -82,15 +82,13 @@ $form.Fields["password"] = $MyProfile.password
 $form.Fields["channelshow"] = $provider[$MyProfile.provider]
 $form.Fields["channel"] = '@' + $MyProfile.provider
 $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
+Write-Host "Data Sending finished"
+Start-Sleep -Seconds 1
 
-# 8. Check WiFi Connection
-Write-Host "Checking WiFi connection..."
-if (checkWiFiConnection) {
-    Write-Host "WiFi connection succeeded."
-}
-else {
-    Write-Host "WiFi Login failed, exit right now."
-    Exit
+# 8. Stop redirected browser
+Write-Host "Stopping redirected browser..."
+if ($MyProfile.browser -and (Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
+    Stop-Process -Name $MyProfile.browser
 }
 
 # 9. Disconnect and connect WiFi
@@ -101,18 +99,12 @@ Write-Host "Connecting WiFi again..."
 Start-Sleep -Seconds 1
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 
-# 10. Stop redirected browser
-Write-Host "Stopping redirected browser..."
-if ($MyProfile.browser -and (Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
-    Stop-Process -Name $MyProfile.browser
-}
-
-# 11. Enable proxy again
+# 10. Enable proxy again
 Write-Host "Enabling system proxy..."
 if ($isEnableProxy) {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
 }
 
-# 12. Exit Script
+# 11. Exit Script
 Write-Host "All done, exit right now."
 Exit
