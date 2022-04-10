@@ -86,7 +86,6 @@ $form.Fields["channelshow"] = $provider[$MyProfile.provider]
 $form.Fields["channel"] = '@' + $MyProfile.provider
 $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
 Write-Host "Data Sending finished"
-Start-Sleep -Seconds 1
 
 # 8. Stop redirected browser
 Write-Host "Stopping redirected browser..."
