@@ -108,16 +108,6 @@ if ($isEnableProxy) {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
 }
 
-# 11. Start QQ and Clash
-Write-Host "Starting QQ..."
-if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
-    Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
-}
-Write-Host "Starting Clash..."
-if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
-    Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
-}
-
 # 11. Exit Script
 Write-Host "All done, exit right now."
 Exit

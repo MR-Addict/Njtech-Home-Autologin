@@ -5,13 +5,13 @@
 - [x] 自动登录
 - [x] 检查网络是否已经连接
 - [x] 检查校园网是否在访问范围内
-- [x] ~关闭的手动代理~规避手动代理
+- [x] ~关闭手动代理~规避手动代理
 - [x] ~登录结束后检查网络是否连接成功~
 - [x] 关闭跳转的默认浏览器
 - [x] ~连接成功后发出哔的提示音~
-- [x] 实现自动配置开机自启任务
-- [x] 实现休眠结束后自动启动任务
-- [ ] 实现连接结束后自动启动其他任务
+- [x] 实现开机后自动执行脚本
+- [x] 实现解锁后自动执行脚本
+- [ ] 实现登录结束后自动启动其他任务
 - [ ] 实现后台无弹窗运行
 
 ## 2. 准备
@@ -19,13 +19,13 @@
 - 配置Windows Powershell权限
 - 配置登录信息
 
-第一步，在一般情况下，Windows是默认Windows Powershell没有执行脚本的权限的，你可以通过以下命令查看你的Windows Powershell的权限：
+第一步，在一般情况下，Windows默认Windows Powershell没有执行脚本的权限，你可以通过以下命令查看你的Windows Powershell的权限：
 
 ```ps1
 Get-ExecutionPolicy
 ```
 
-如果返回的是`Restricted `，那就说明你的Windows Powershell没有执行脚本的权限。你可以通过管理员重新打开Windows Powershell，然后再输入以下命令就可以了：
+如果返回的是`Restricted`，`Allsigned`，`Default`或者`Undefined`，那就说明你的Windows Powershell没有执行脚本的权限。你可以通过管理员重新打开Windows Powershell，然后再输入以下命令就可以了（建议使用的权限是`RemoteSigned`，更高级的权限没有必要）。
 
 ```ps1
 Set-ExecutionPolicy RemoteSigned
@@ -54,7 +54,7 @@ Set-ExecutionPolicy RemoteSigned
 |   IE浏览器   |   iexplore   |
 |  联想浏览器  |  SLBrowser   |
 
-下面是一个示例：
+下面是一个profile的示例：
 
 ```json
 {
@@ -72,10 +72,21 @@ Set-ExecutionPolicy RemoteSigned
   - setup.ps1
   - profile.json
 
-> 注意：为了方便大家使用，在`src`目录下有一个`setup.ps1`的文件，双击运行后跟着指示操作就可以完成登录信息的配置。同时`setup`脚本也可以帮你自动配置开机自启和休眠结束自启两个定时任务，双击启动时给予管理员权限就可以了。
+> 注意：为了方便大家使用，在`src`目录下有一个`setup.ps1`的文件，双击运行后跟着指示操作就可以完成登录信息的配置。同时`setup`脚本也可以帮大家自动配置开机自启和解锁自启两个定时任务，运行时给予管理员权限就可以了。
 
 ## 3. 使用
 
-双击`src`文件夹下的`autologin.ps1`直接运行即可。如果你配置了开机自启和休眠结束自启，那么本脚本会在相应事件下自动执行。
+双击`src`文件夹下的`autologin.ps1`直接运行即可，如果直接进入了编辑模式，你可能就需要配置ps1文件的打开方式，或者右击文件选择`通过Powershell运行`。
 
-> 注意：本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况。同时由于本项目是使用Powershell脚本，而目前最新的`Powershell 7.0`版本更是支持跨平台，因此理论上稍作修改是可以在任何系统上使用的。
+如果你配置了开机自启和休眠结束自启，那么本脚本会在相应事件下自动执行。
+
+关于setup脚本的两点说明：
+
+- 如果你想**修改**或者**更新**登录信息可以再次运行setup脚本，profile会自动更新
+- 如果你不想脚本在开机和解锁后自动执行脚本也可以再次运行setup脚本，配置定时任务时选择**删除**就可以了
+
+> 注意：本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况，使用Windows 10系统的话不必担心这个问题，默认的的Windows Powershell就是5.1版本。同时由于本项目是使用Powershell脚本，而目前最新的`Powershell 7.0`版本更是支持跨平台，因此理论上稍作修改是可以在任何系统上使用的。
+
+## 4. 说明
+
+有任何问题和建议都欢迎大家`issue`或者`pull request`。
