@@ -1,4 +1,4 @@
-# Hide global progress bar
+# 0. Hide global progress bar
 $progressPreference = "silentlyContinue"
 
 # 1. Check profile file
@@ -107,9 +107,6 @@ Write-Host "Enabling system proxy..."
 if ($isEnableProxy) {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
 }
-
-# Restore progress bar
-$progressPreference = "Continue"
 
 # 11. Exit Script
 Write-Host "All done, exit right now."
