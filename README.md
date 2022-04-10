@@ -70,13 +70,6 @@ Set-ExecutionPolicy RemoteSigned
 }
 ```
 
-最后，你的文件结构应该如下：
-
-- src
-  - autologin.ps1
-  - setup.ps1
-  - profile.json
-
 ### 2.3 配置开机自启和解锁自启
 
 第三步，配置开机自启和解锁自启可以免去手动运行脚本的麻烦。这里我使用的Windows自带的`Task Scheduler`应用程式，大部分软件的自动更新功能就是使用的它。你可以手动配置定时任务，这里我为了方便直接通过Windows Powershell脚本进行配置，也就是项目中的`setup.ps1`脚本。
@@ -101,6 +94,13 @@ Do you want to create startup and workstation unlock tasks for autologin or dele
 [Y/y]Yes [N/n]No [D/d]Delete: y
 Configurating autologin tasks...
 ```
+
+最后，你的文件结构应该如下：
+
+- src
+  - autologin.ps1
+  - setup.ps1
+  - profile.json
 
 ## 3. 使用
 
