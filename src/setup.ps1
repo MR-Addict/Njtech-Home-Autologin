@@ -8,17 +8,15 @@ if (-Not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # Profile configuration
 Write-Host "Do you want to configure your profile?"
-$choice = Read-Host -Prompt "[Y/y]Yes [N/n]No"
+$choice = Read-Host -Prompt "[Y/y]Configurate [N/n]Skip"
 if ($choice -eq "Y") {
     $username = Read-Host -Prompt "Input your username"
     $password = Read-Host -Prompt "Input your password"
     $provider = Read-Host -Prompt "Input your provider"
-    $browser = Read-Host -Prompt "Input your redirected browser"
     $customProfile = @{
         "username" = $username
         "password" = $password
         "provider" = $provider
-        "browser"  = $browser
     }
     $customProfile | ConvertTo-Json | Out-File profile.json -Encoding utf8
     Write-Host ($customProfile | ConvertTo-Json)
@@ -26,7 +24,7 @@ if ($choice -eq "Y") {
 
 # Scheduled task configuration
 Write-Host "Do you want to create startup and workstation unlock tasks for autologin or delete them?"
-$choice = Read-Host -Prompt "[Y/y]Yes [N/n]No [D/d]Delete"
+$choice = Read-Host -Prompt "[Y/y]Create [N/n]Skip [D/d]Delete"
 if ($choice -ne "N") {
     # Set poweshell executionpolicy
     Write-Host "Configurating autologin tasks..."
@@ -64,6 +62,24 @@ if ($choice -ne "N") {
         }
     }
 }
+
+# Disable auto redirected browser
+Write-Host "Do you want to enable or disable browser auto directed globally?"
+$choice = Read-Host -Prompt "[Y/y]Disable [N/n]Enable"
+$probingStatus = (Get-ItemProperty "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet").EnableActiveProbing -eq "1"
+if ($choice -eq "Y") {
+    if ( $probingStatus ) {
+        Set-ItemProperty -Path "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" -Name "EnableActiveProbing" -Value 0
+    }
+    Write-Host "Your browser auto directed disabled"
+}
+else {
+    if (!$probingStatus) {
+        Set-ItemProperty -Path "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" -Name "EnableActiveProbing" -Value 1
+    }
+    Write-Host "Your browser auto directed enabled"
+}
+
 # Exit set up script
 Pause
 exit

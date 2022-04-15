@@ -87,13 +87,7 @@ $form.Fields["channel"] = '@' + $MyProfile.provider
 $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
 Write-Host "Data Sending finished"
 
-# 8. Stop redirected browser
-Write-Host "Stopping redirected browser..."
-if ($MyProfile.browser -and (Get-Process | Select-Object ProcessName).ProcessName -contains $MyProfile.browser) {
-    Stop-Process -Name $MyProfile.browser
-}
-
-# 9. Disconnect and connect WiFi
+# 8. Disconnect and connect WiFi
 Write-Host "Disconnecting WiFi..."
 Start-Sleep -Seconds 1
 netsh wlan disconnect | Out-Null
@@ -101,22 +95,12 @@ Write-Host "Connecting WiFi again..."
 Start-Sleep -Seconds 1
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 
-# 10. Enable proxy again
+# 9. Enable proxy again
 Write-Host "Enabling system proxy..."
 if ($isEnableProxy) {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
 }
 
-# 11. Start QQ and Clash
-Write-Host "Starting QQ..."
-if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
-    Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
-}
-Write-Host "Starting Clash..."
-if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
-    Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
-}
-
-# 11. Exit Script
+# 10. Exit Script
 Write-Host "All done, exit right now."
 Exit

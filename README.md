@@ -7,7 +7,7 @@
 - [x] 检查校园网是否在访问范围内
 - [x] ~关闭手动代理~规避手动代理（如果你使用VPN会存在代理问题）
 - [x] ~登录结束后检查网络是否连接成功~
-- [x] 关闭跳转的默认浏览器
+- [x] ~关闭跳转的默认浏览器~阻止浏览器跳转
 - [x] ~连接成功后发出哔的提示音~
 - [x] 实现开机后自动执行脚本
 - [x] 实现解锁后自动执行脚本
@@ -36,28 +36,17 @@ Set-ExecutionPolicy RemoteSigned
 
 ### 2.2 配置登录信息
 
-第二步，由于登录时需要`账号`，`密码`和`运营商`的信息，同时本脚本可以帮大家自动关闭跳转的`浏览器`，这些信息都放在了`profile.json`配置文件中，默认路径是和`autologin.ps1`同一路径。克隆时没有这个文件，需要手动配置或者在下一步使用脚本配置。profile的配置信息如下：
+第二步，由于登录时需要`账号`，`密码`和`运营商`的信息，这些信息都放在了`profile.json`配置文件中，默认路径是和`autologin.ps1`同一路径。克隆时没有这个文件，需要手动配置或者在下一步使用脚本配置。profile的配置信息如下：
 
 ```json
 {
   "username": "学号/工号",
   "password": "密码",
-  "provider": "运营商",
-  "browser": "跳转的浏览器程序名"
+  "provider": "运营商"
 }
 ```
 
 其中运营商只能填两个，移动是`cmcc`，电信是`telecom`。
-
-我也整理了一些主流的浏览器名称，把对应的浏览器程序名填入就可以了。如果下面没有你使用的浏览器，你可以自己打开任务管理器查看浏览器的程序名。如果你不想使用这个功能可以将浏览器的程序名`设置为空`。
-
-| 浏览器用户名 | 浏览器程序名 |
-| :----------: | :----------: |
-|  微软浏览器  |    msedge    |
-|  谷歌浏览器  |    chrome    |
-|  火狐浏览器  |   firefox    |
-|   IE浏览器   |   iexplore   |
-|  联想浏览器  |  SLBrowser   |
 
 下面是一个profile的示例：
 
@@ -65,8 +54,7 @@ Set-ExecutionPolicy RemoteSigned
 {
   "username": "XXXXXXXXXXXX",
   "password": "XXXXXXXXXXXX",
-  "provider": "telecom",
-  "browser": "msedge"
+  "provider": "telecom"
 }
 ```
 
@@ -93,6 +81,14 @@ Input your redirected browser: msedge
 Do you want to create startup and workstation unlock tasks for autologin or delete them?
 [Y/y]Yes [N/n]No [D/d]Delete: y
 Configurating autologin tasks...
+```
+
+最后会询问你是否需要关闭浏览器自动跳转的功能，注意这里设置禁止浏览器跳转后，今后任何情况下浏览器都不会再跳转。如果你后面想要重新启用浏览器跳转可以再次运行setup脚本，选择启用就可以了：
+
+```plaintext
+Do you want to enable or disable browser auto directed globally?
+[Y/y]Disable [N/n]Enable: y
+Your browser auto directed disabled
 ```
 
 最后，你的文件结构应该如下：
