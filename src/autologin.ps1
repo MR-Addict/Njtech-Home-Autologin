@@ -43,23 +43,23 @@ if (!(isNjtechExist)) {
     Exit
 }
 
-# 4. Disable Proxy
-Write-Host "Disabling system proxy..."
-if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
-    $global:isEnableProxy = $true
-}
-
-# 5. Connect Njtech-Home
+# 4. Connect Njtech-Home
 Write-Host "Loading Njtech-Home network..."
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 while (!(Test-NetConnection "u.njtech.edu.cn" -WarningAction SilentlyContinue -InformationLevel Quiet)) {}
 
-# 6. Check WiFi Connection
+# 5. Check WiFi Connection
 Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
     Exit
+}
+
+# 6. Disable Proxy
+Write-Host "Disabling system proxy..."
+if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
+    $global:isEnableProxy = $true
 }
 
 # 7. Post data to remote host
