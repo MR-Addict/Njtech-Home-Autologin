@@ -1,5 +1,6 @@
 # 0. Hide global progress bar
 $progressPreference = "silentlyContinue"
+$isEnableProxy = $false
 
 # 1. Check profile file
 Write-Host "Loading profile..."
@@ -19,15 +20,6 @@ function checkWiFiConnection {
     return $false
 }
 
-# 2. Check WiFi Connection
-Write-Host "Checking whether you are connected..."
-if (checkWiFiConnection) {
-    Write-Host "WiFi already connected, exit right now."
-    Exit
-}
-
-# 3. Check whether Njtech-Home exists
-Write-Host "Checking whether Njtech-Home available..."
 function isNjtechExist {
     netsh wlan show networks | ForEach-Object {
         if ($_ -match '^SSID (\d+) : (.*)$') {
@@ -38,6 +30,34 @@ function isNjtechExist {
     }
     return $false
 }
+
+function startProcess {
+    # Enable proxy again
+    Write-Host "Enabling system proxy..."
+    if ($isEnableProxy) {
+        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
+    }
+    # Start QQ and Clash
+    Write-Host "Starting QQ..."
+    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
+        Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
+    }
+    Write-Host "Starting Clash..."
+    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
+        Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
+    }
+}
+
+# 2. Check WiFi Connection
+Write-Host "Checking whether you are connected..."
+if (checkWiFiConnection) {
+    Write-Host "WiFi already connected, exit right now."
+    startProcess
+    Exit
+}
+
+# 3. Check whether Njtech-Home exists
+Write-Host "Checking whether Njtech-Home available..."
 if (!(isNjtechExist)) {
     Write-Host "Njtech-Home not available, exit right now."
     Exit
@@ -52,6 +72,7 @@ while (!(Test-NetConnection "u.njtech.edu.cn" -WarningAction SilentlyContinue -I
 Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection) {
     Write-Host "WiFi already connected, exit right now."
+    startProcess
     Exit
 }
 
@@ -59,7 +80,7 @@ if (checkWiFiConnection) {
 Write-Host "Disabling system proxy..."
 if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
-    $global:isEnableProxy = $true
+    $isEnableProxy = $true
 }
 
 # 7. Post data to remote host
@@ -95,11 +116,8 @@ Write-Host "Connecting WiFi again..."
 Start-Sleep -Seconds 1
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 
-# 9. Enable proxy again
-Write-Host "Enabling system proxy..."
-if ($isEnableProxy) {
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
-}
+# 9. Enable proxy and start process
+startProcess
 
 # 10. Exit Script
 Write-Host "All done, exit right now."
