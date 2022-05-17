@@ -10,14 +10,13 @@ if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
 }
 
 function checkWiFiConnection {
-    $timeout = New-TimeSpan -Seconds 1
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    do {
-        if (Test-NetConnection "www.baidu.com" -WarningAction SilentlyContinue -InformationLevel Quiet) {
-            return $true
-        }
-    } while ($stopWatch.elapsed -lt $timeout)
-    return $false
+    cmd /c "ping baidu.com -n 1 -w 1000 >nul 2>nul"
+    if ($LASTEXITCODE) {
+        return $false
+    }
+    else {
+        return $true
+    }
 }
 
 function isNjtechExist {
