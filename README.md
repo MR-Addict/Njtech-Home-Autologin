@@ -6,7 +6,7 @@
 - [x] 检查网络是否已经连接
 - [x] 检查校园网是否在访问范围内
 - [x] ~关闭手动代理~规避手动代理（如果你使用VPN会存在代理问题）
-- [x] ~登录结束后检查网络是否连接成功~
+- [x] 登录结束后检查网络是否连接成功
 - [x] ~关闭跳转的默认浏览器~阻止浏览器跳转
 - [x] ~连接成功后发出哔的提示音~
 - [x] 实现开机后自动执行脚本
@@ -28,7 +28,7 @@
 Get-ExecutionPolicy
 ```
 
-如果返回的是`Restricted`，`Allsigned`，`Default`或者`Undefined`，那就说明你的Windows Powershell没有执行脚本的权限。你可以通过管理员重新打开Windows Powershell，然后再输入以下命令就可以了（建议使用的权限是`RemoteSigned`，没有必要使用更高级的权限，那样不安全）：
+如果返回的是`Restricted`，`Allsigned`，`Default`或者`Undefined`，那就说明你的Windows Powershell没有执行脚本的权限。你可以`通过管理员`重新打开Windows Powershell，然后再输入以下命令就可以了（建议使用的权限是`RemoteSigned`，没有必要使用更高级的权限，那样不安全）：
 
 ```ps1
 Set-ExecutionPolicy RemoteSigned

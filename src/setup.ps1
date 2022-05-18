@@ -58,26 +58,26 @@ if ($choice -ne "N") {
             Unregister-ScheduledTask -TaskName $taskName
         }
         else {
-            Write-Host "Sorry you haven't created them yet"
+            Write-Host "Sorry you haven't created them yet."
         }
     }
 }
 
 # Disable auto redirected browser
-Write-Host "Do you want to enable or disable browser auto directed globally?"
+Write-Host "Do you want to enable or disable browser auto-redirected globally?"
 $choice = Read-Host -Prompt "[Y/y]Disable [N/n]Enable"
 $probingStatus = (Get-ItemProperty "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet").EnableActiveProbing -eq "1"
 if ($choice -eq "Y") {
     if ( $probingStatus ) {
         Set-ItemProperty -Path "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" -Name "EnableActiveProbing" -Value 0
     }
-    Write-Host "Your browser auto directed disabled"
+    Write-Host "Your browser auto-redirected has disabled."
 }
 else {
     if (!$probingStatus) {
         Set-ItemProperty -Path "HKLM:SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" -Name "EnableActiveProbing" -Value 1
     }
-    Write-Host "Your browser auto directed enabled"
+    Write-Host "Your browser auto-redirected has enabled."
 }
 
 # Exit set up script
