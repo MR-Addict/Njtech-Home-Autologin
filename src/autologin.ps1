@@ -29,15 +29,6 @@ function startProcess {
         Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Enabling system proxy..."
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
     }
-    # Start QQ and Clash
-    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
-        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
-        Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
-    }
-    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
-        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash..."
-        Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
-    }
 }
 
 # 1. Check profile file
