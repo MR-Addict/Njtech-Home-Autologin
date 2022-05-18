@@ -29,6 +29,15 @@ function startProcess {
         Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Enabling system proxy..."
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
     }
+    # Start QQ and Clash
+    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
+        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
+        Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
+    }
+    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
+        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash..."
+        Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
+    }
 }
 
 # 1. Check profile file
@@ -90,18 +99,15 @@ $posturl = "https://u.njtech.edu.cn/cas/login;jsessionid=65B9C37DFC296E1DE315076
 # 7.4 Send post data
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Sending your profile to host..."
 $r = Invoke-WebRequest -Uri $geturl -SessionVariable s
-if (($r | Get-Member | Select-Object -Property Name) -notcontains "Forms") {
-    Write-Host "[ERROR] " -ForegroundColor Red -NoNewline; Write-Host "Reach host error, exit right now."
-    startProcess
-    Exit
-}
 $form = $r.Forms[0]
 $form.Fields["username"] = $MyProfile.username
 $form.Fields["password"] = $MyProfile.password
-$form.Fields["channelshow"] = $provider[$MyProfile.provider]
-$form.Fields["channel"] = '@' + $MyProfile.provider
+if (($form.Fields | Get-Member | Select-Object -Property Key) -contains "channel") {
+    $form.Fields["channelshow"] = $provider[$MyProfile.provider]
+    $form.Fields["channel"] = '@' + $MyProfile.provider
+}
 $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished"
+Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
 
 # 8. Check WiFi Connection
 if (checkWiFiConnection) {
