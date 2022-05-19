@@ -30,14 +30,14 @@ function startProcess {
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
     }
     # Start QQ and Clash
-    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
-        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
-        Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
-    }
-    if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
-        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash..."
-        Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
-    }
+    # if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
+    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
+    #     Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
+    # }
+    # if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
+    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash..."
+    #     Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
+    # }
 }
 
 # 1. Check profile file
@@ -109,6 +109,7 @@ $r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
 
 # 8. Check WiFi Connection
+Start-Sleep -Seconds 1
 if (checkWiFiConnection) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi connected successfully."
 }

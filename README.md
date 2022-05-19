@@ -9,7 +9,6 @@
 - [x] 实现解锁后自动执行脚本
 - [x] 检查校园网是否在访问范围内
 - [x] 规避手动代理（如果你使用VPN会存在代理问题）
-- [x] 登录结束后检查网络是否连接成功
 - [ ] 实现登录结束后自动启动其他任务
 - [ ] 实现后台无弹窗运行
 
@@ -32,9 +31,9 @@ Get-ExecutionPolicy
 Set-ExecutionPolicy RemoteSigned
 ```
 
-### 2.2 配置登录信息，定时任务和关闭浏览器跳转
+### 2.2 配置登录信息、定时任务和关闭浏览器跳转
 
-第二步，配置登录信息，定时任务和关闭浏览器跳转。这些功能都是可以直接通过运行setup脚本实现的。记得先完成`第一步的Windows Powershell权限配置`，不然无法运行脚本。（双击运行setup脚本时如果直接进入了编辑模式，你可能就需要配置ps1文件的打开方式，或者右击文件选择`使用Powershell运行`。）
+第二步，配置登录信息、定时任务和关闭浏览器跳转。这些功能都是可以直接通过运行setup脚本实现的。记得先完成`第一步的Windows Powershell权限配置`，不然无法运行脚本。（双击运行setup脚本时如果直接进入了编辑模式，你可能就需要配置ps1文件的打开方式，或者右击文件选择`使用Powershell运行`。）
 
 运行setup脚本时首先会询问你是否需要配置登录信息，如果你还没有`创建`或者想要`更新`已有信息可以选择Y，然后依次填入你的学号，密码，运营商。如果你之前已经配置过了可以选择N跳过该配置。其中运营商只能填两个，移动是`cmcc`，电信是`telecom`。
 
@@ -46,7 +45,7 @@ Input your password: XXXXXXXXXXXX
 Input your provider: cmcc
 ```
 
-接着会询问你是否需要创建或者删除定时任务，如果你还没有`创建`或者想要`更新`任务可以选择Y，然后脚本会自动创建两个定时任务。如果你已经创建过了或者你后面不想让脚本自动执行，可以选择D删除任务。
+接着会询问你是否需要创建或者删除定时任务，如果你还没有`创建`或者想要`更新`任务可以选择Y；如果你已经创建过了可以选择N跳过配置如果你后面不想让脚本自动执行可以选择D删除任务。
 
 ```plaintext
 Do you want to create startup and workstation unlock tasks for autologin or delete them?
@@ -54,7 +53,7 @@ Do you want to create startup and workstation unlock tasks for autologin or dele
 Configurating autologin tasks...
 ```
 
-最后会询问你是否需要关闭浏览器自动跳转的功能，
+最后会询问你是否需要关闭浏览器自动跳转的功能。
 
 ```plaintext
 Do you want to enable or disable browser auto directed globally?
@@ -62,11 +61,11 @@ Do you want to enable or disable browser auto directed globally?
 Your browser auto directed disabled
 ```
 
-> 注意：这里设置禁止浏览器跳转后，今后任何情况下浏览器都不会再跳转。如果你后面想要重新启用浏览器跳转可以再次运行setup脚本，可以选择N重新启用浏览器跳转。
+> 注意：这里设置禁止浏览器跳转后，今后任何情况下浏览器都不会再跳转。如果你后面想要重新启用浏览器跳转功能可以选择N重新启用浏览器跳转。
 
 ## 3. 使用
 
-双击`src`文件夹下的`autologin.ps1`直接运行即可，
+双击`src`文件夹下的`autologin.ps1`直接运行即可。
 
 如果你配置了开机自启和解锁自启，那么本脚本会在相应事件下自动执行。
 
