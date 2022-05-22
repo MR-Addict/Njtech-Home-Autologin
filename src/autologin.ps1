@@ -93,7 +93,7 @@ $provider = @{
 }
 
 # 7.3 Get and post URL
-$geturl = "https://u.njtech.edu.cn/cas/login?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26response_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232"
+$geturl = "https://i.njtech.edu.cn"
 $posturl = "https://u.njtech.edu.cn"
 
 # 7.4 Send post data
