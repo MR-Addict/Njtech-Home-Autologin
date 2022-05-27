@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 # 1.1 Get url
 geturl = "https://i.njtech.edu.cn"
 # 1.2 Load profile information
-profile = json.load(open("./assets/profile.json"))
+profile = json.load(open("../profile.json"))
 provider = {
     "cmcc": "中国移动",
     "telecom": "中国电信"
