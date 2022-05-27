@@ -4,9 +4,9 @@ setlocal EnableDelayedExpansion
 title Njtech-Home Autologin Script
 
 :: Check whether profile.json exist
-if not exist .\assets\profile.json (
-    echo profile.josn not exist, please rewrite it first at assets folder.
-    echo. > .\assets\profile.json
+if not exist .\profile.json (
+    echo profile.josn not exist, please configure using setup.bat script
+    echo. > .\profile.json
     exit
 )
 
@@ -49,7 +49,7 @@ if %isConnect%==1 (
 
 ::Run script
 echo Running script...
-.\assets\dist\autologin.exe
+python autologin.py >nul 2>nul
 
 :: Check whether WiFi is connected
 call :CheckWiFiConnection isConnect
@@ -71,7 +71,7 @@ echo Connecting WiFi again...
 netsh wlan connect name="Njtech-Home" interface="WLAN" >nul 2>nul
 
 :: Read default browser from JSON file and kill it
-for /f "Tokens=* Delims=" %%x in (.\assets\profile.json) do set JSON=!JSON!%%x
+for /f "Tokens=* Delims=" %%x in (.\profile.json) do set JSON=!JSON!%%x
 for /f "delims=" %%I in ('cscript /nologo /e:JScript "%~f0"') do set "%%~I"
 taskkill /F /IM %JSON[browser]%.exe /T >nul 2>nul 
 
