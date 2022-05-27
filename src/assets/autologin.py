@@ -4,27 +4,29 @@ import requests
 from bs4 import BeautifulSoup
 
 # 1. Login preparations
-# 1.1 Get url
-geturl = "https://i.njtech.edu.cn"
-posturl = "https://u.njtech.edu.cn"
-# 1.2 Load profile information
+# 1.1 Load profile information
+print("[INFO] Loading your profile...")
 profile = json.load(open("./profile.json"))
 provider = {
     "cmcc": "中国移动",
     "telecom": "中国电信"
 }
-# 1.3 define a msedge useragent
+# 1.2 Get constants
+geturl = "https://i.njtech.edu.cn"
+posturl = "https://u.njtech.edu.cn"
 useragent = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55'
 }
-# 1.4 implement a Session object
+# 1.3 implement a Session object
 s = requests.Session()
 s.headers.update(useragent)
 # 1.5 get login page
+print("[INFO] Sending get requests...")
 r = s.get(geturl)
 
 # 2. Handle response
-# 2.1 find lt and execution payload information using BeautifulSoup
+# 2.1 Find lt and execution payload information using BeautifulSoup
+print("[INFO] Parsing response html...")
 soup = BeautifulSoup(r.content, "html.parser")
 lt = soup.find('input', attrs={'name': 'lt'})['value']
 execution = soup.find('input', attrs={'name': 'execution'})['value']
@@ -43,7 +45,9 @@ payload = {
     'login': login,
 }
 # 2.3 Post data to host
+print("[INFO] Sending your profile to host...")
 r = s.post(posturl, data=payload)
 
 # 3. close Session
+print("[INFO] Auto login finished!")
 s.close()
