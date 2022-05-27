@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 # 1. Login preparations
 # 1.1 Get url
 geturl = "https://i.njtech.edu.cn"
+posturl = "https://u.njtech.edu.cn"
 # 1.2 Load profile information
 profile = json.load(open("../profile.json"))
 provider = {
@@ -21,7 +22,6 @@ s = requests.Session()
 s.headers.update(useragent)
 # 1.5 get login page
 r = s.get(geturl)
-posturl = r.url
 
 # 2. Handle response
 # 2.1 find lt and execution payload information using BeautifulSoup
@@ -30,6 +30,7 @@ lt = soup.find('input', attrs={'name': 'lt'})['value']
 execution = soup.find('input', attrs={'name': 'execution'})['value']
 _eventId = soup.find('input', attrs={'name': '_eventId'})['value']
 login = soup.find('input', attrs={'name': 'login'})['value']
+posturl = posturl + soup.find('form', id='fm1').get('action')
 # 2.2 Prepare post payload
 payload = {
     'username': profile["username"],
