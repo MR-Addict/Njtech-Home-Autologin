@@ -1,35 +1,36 @@
+# 0. Import packages
 import json
 import requests
 from bs4 import BeautifulSoup
 
-geturl = "https://u.njtech.edu.cn/cas/login?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26response_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232"
-posturl = "https://u.njtech.edu.cn/cas/login;jsessionid=65B9C37DFC296E1DE315076359292F44.TomcatB?service=https%3A%2F%2Fu.njtech.edu.cn%2Foauth2%2Fauthorize%3Fclient_id%3DOe7wtp9CAMW0FVygUasZ%26response_type%3Dcode%26state%3Dnjtech%26s%3Df682b396da8eb53db80bb072f5745232"
-
-# load profile json file
+# 1. Login preparations
+# 1.1 Get url
+geturl = "https://i.njtech.edu.cn"
+# 1.2 Load profile information
 profile = json.load(open("./assets/profile.json"))
 provider = {
     "cmcc": "中国移动",
     "telecom": "中国电信"
 }
-# define a msedge headers
-headers = {
+# 1.3 define a msedge useragent
+useragent = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55'
 }
-
-# implement a Session object
+# 1.4 implement a Session object
 s = requests.Session()
-s.headers.update(headers)
-
-# get login page
+s.headers.update(useragent)
+# 1.5 get login page
 r = s.get(geturl)
+posturl = r.url
 
-# find lt and execution payload information using BeautifulSoup
+# 2. Handle response
+# 2.1 find lt and execution payload information using BeautifulSoup
 soup = BeautifulSoup(r.content, "html.parser")
 lt = soup.find('input', attrs={'name': 'lt'})['value']
 execution = soup.find('input', attrs={'name': 'execution'})['value']
 _eventId = soup.find('input', attrs={'name': '_eventId'})['value']
 login = soup.find('input', attrs={'name': 'login'})['value']
-# load payload
+# 2.2 Prepare post payload
 payload = {
     'username': profile["username"],
     'password': profile["password"],
@@ -40,8 +41,8 @@ payload = {
     '_eventId': _eventId,
     'login': login,
 }
-# post data
+# 2.3 Post data to host
 r = s.post(posturl, data=payload)
 
-# close Session
+# 3. close Session
 s.close()
