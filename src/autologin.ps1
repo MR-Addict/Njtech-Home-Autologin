@@ -2,8 +2,8 @@
 $progressPreference = "silentlyContinue"
 $isEnableProxy = $false
 
-function checkWiFiConnection {
-    cmd /c "ping baidu.com -n 1 -w 1000 >nul 2>nul"
+function checkWiFiConnection($networkName) {
+    cmd /c "ping $networkName -n 1 -w 1000 >nul 2>nul"
     if ($LASTEXITCODE) {
         return $false
     }
@@ -49,7 +49,7 @@ if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
 
 # 2. Check WiFi Connection
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
-if (checkWiFiConnection) {
+if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
     startProcess
     Exit
@@ -63,21 +63,21 @@ if (!(isNjtechExist)) {
 }
 
 # 4. Connect Njtech-Home
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Loading Njtech-Home network..."
+Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking Njtech-Home network..."
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
-while (!(Test-NetConnection "u.njtech.edu.cn" -WarningAction SilentlyContinue -InformationLevel Quiet)) {}
+while (!(checkWiFiConnection("u.njtech.edu.cn"))) {}
 
 # 5. Check WiFi Connection
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
-if (checkWiFiConnection) {
+if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
     startProcess
     Exit
 }
 
 # 6. Disable Proxy
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Disabling system proxy..."
 if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
+    Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Disabling system proxy..."
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
     $isEnableProxy = $true
 }
@@ -110,7 +110,7 @@ Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending
 
 # 8. Check WiFi Connection
 Start-Sleep -Seconds 1
-if (checkWiFiConnection) {
+if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi connected successfully."
 }
 else {
