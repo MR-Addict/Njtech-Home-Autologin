@@ -71,8 +71,8 @@ Your browser auto directed disabled
 
 ![Preview-GIF](autologin.gif)
 
-> 注意：本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况，使用Windows 10系统的话不必担心这个问题，默认的的Windows Powershell就是5.1版本。同时由于本项目是使用Powershell脚本，而目前最新的`Powershell 7.0`版本更是支持跨平台，因此理论上稍作修改是可以在任何系统上使用的。
-
 ## 4. 说明
 
 有任何问题和建议都欢迎大家`Issue`或`Pull request`。
+
+> 注意：本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况。使用Windows 10、11系统的话不必担心这个问题，默认的的Windows Powershell就是5.1版本。
