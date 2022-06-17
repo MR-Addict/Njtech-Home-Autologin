@@ -1,6 +1,5 @@
 # 0. Hide global progress bar
 $progressPreference = "silentlyContinue"
-$isEnableProxy = $false
 
 function checkWiFiConnection($networkName) {
     cmd /c "ping $networkName -n 1 -w 1000 >nul 2>nul"
@@ -24,11 +23,6 @@ function isNjtechExist {
 }
 
 function startProcess {
-    # Enable proxy again
-    if ($isEnableProxy) {
-        Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Enabling system proxy..."
-        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 1
-    }
     # Start QQ and Clash
     # if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
     #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
@@ -47,7 +41,15 @@ if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
     Exit
 }
 
-# 2. Check WiFi Connection
+# 2. Add Proxy Exception
+$ProxyProperty = Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+if ( $ProxyProperty.ProxyEnable -and $ProxyProperty.ProxyOverride -notmatch "njtech.edu.cn") {
+    Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Adding proxy exception..."
+    $ProxyExceptionList = "*njtech.edu.cn;" + $ProxyProperty.ProxyOverride
+    $ProxyProperty | Set-ItemProperty -Name "ProxyOverride" -Value $ProxyExceptionList
+}
+
+# 3. Check WiFi Connection
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
@@ -55,19 +57,19 @@ if (checkWiFiConnection("baidu.com")) {
     Exit
 }
 
-# 3. Check whether Njtech-Home exists
+# 4. Check whether Njtech-Home exists
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether Njtech-Home available..."
 if (!(isNjtechExist)) {
     Write-Host "[ERROR] " -ForegroundColor Red -NoNewline; Write-Host "Njtech-Home not available, exit right now."
     Exit
 }
 
-# 4. Connect Njtech-Home
+# 5. Connect Njtech-Home
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking Njtech-Home network..."
 netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
 while (!(checkWiFiConnection("u.njtech.edu.cn"))) {}
 
-# 5. Check WiFi Connection
+# 6. Check WiFi Connection
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
@@ -75,37 +77,28 @@ if (checkWiFiConnection("baidu.com")) {
     Exit
 }
 
-# 6. Disable Proxy
-if ( (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings").ProxyEnable -eq "1") {
-    Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Disabling system proxy..."
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "ProxyEnable" -Value 0
-    $isEnableProxy = $true
-}
-
 # 7. Post data to remote host
 # 7.1 Load profile information
 $MyProfile = Get-Content $PSScriptRoot\profile.json -Raw | ConvertFrom-Json
-
-# 7.2 Provider hash table
+# 7.2 Provider hash table and user agent
 $provider = @{
     "cmcc"    = "中国移动"
     "telecom" = "中国电信"
 }
-
+$UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.41"
 # 7.3 Get and post URL
 $geturl = "https://i.njtech.edu.cn"
 $posturl = "https://u.njtech.edu.cn"
-
 # 7.4 Send post data
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Sending your profile to host..."
-$r = Invoke-WebRequest -Uri $geturl -SessionVariable s
+$r = Invoke-WebRequest -Uri $geturl -SessionVariable Session -UserAgent $UserAgent
 $form = $r.Forms[0]
 $form.Fields["username"] = $MyProfile.username
 $form.Fields["password"] = $MyProfile.password
 $form.Fields["channelshow"] = $provider[$MyProfile.provider]
 $form.Fields["channel"] = '@' + $MyProfile.provider
 $posturl = $posturl + $form.Action
-$r = Invoke-WebRequest -Uri $posturl -WebSession $s -Method Post -Body $form
+$r = Invoke-WebRequest -Uri $posturl -WebSession $Session -Method Post -Body $form -UserAgent $UserAgent
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
 
 # 8. Check WiFi Connection
