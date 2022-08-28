@@ -1,5 +1,11 @@
 #! /bin/bash
 
+if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
+  echo "[INFO] WiFi already connected!" && exit
+else
+  echo "[INFO] Autologin..."
+fi
+
 # Store data in njtech_home_html.txt and njtech_home_cookie
 curl -skL i.njtech.edu.cn -c njtech_home_cookie.txt -o njtech_home_html.txt
 
@@ -19,4 +25,4 @@ JSESSIONID=$(grep "JSESSIONID" njtech_home_cookie.txt|awk '{print $7}'|head -1)
 cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 form_data="username="$username"&password="$password"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=提交"
 
-curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data"
+curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" > /dev/null 2>&1
