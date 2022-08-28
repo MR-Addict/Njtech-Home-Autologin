@@ -24,13 +24,18 @@ function isNjtechExist {
 
 function startProcess {
     # Start QQ and Clash
-    # if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "QQ")) {
+    # $Processes = (Get-Process).ProcessName
+    # if ($Processes -notcontains "QQ") {
     #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
     #     Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
     # }
-    # if (!((Get-Process | Select-Object ProcessName).ProcessName -contains "Clash for Windows")) {
-    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash..."
+    # if ($Processes -notcontains "Clash for Windows") {
+    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash For Windows..."
     #     Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
+    # }
+    # if ($Processes -notcontains "telegram") {
+    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Telegram..."
+    #     Telegram -startintray
     # }
 }
 
