@@ -6,7 +6,7 @@ else
   echo "[INFO] Autologin..."
 fi
 
-# Store data in njtech_home_html.txt and njtech_home_cookie
+# Store data in njtech_home_html.txt and njtech_home_cookie.txt
 curl -skL i.njtech.edu.cn -c njtech_home_cookie.txt -o njtech_home_html.txt
 
 username="your_username"
@@ -26,3 +26,5 @@ cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 form_data="username="$username"&password="$password"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=提交"
 
 curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" > /dev/null 2>&1
+
+rm njtech_home*
