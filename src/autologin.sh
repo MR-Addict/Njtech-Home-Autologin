@@ -5,7 +5,8 @@ if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
 elif ping -w 1 -c 1 njtech.edu.cn > /dev/null 2>&1; then
   echo "[INFO] Execute autologin script..."
 else
-  echo "[WARN] Cannot access Njtech-Home!" && exit
+  echo "[WARN] Cannot access Njtech-Home!"
+  echo "[FAIL] $(date)" >> log.txt && exit
 fi
 
 # Store data in login_get_html.txt and login_cookie.txt
@@ -32,5 +33,5 @@ echo "[INFO] Sending data to remote host..."
 curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.txt > /dev/null 2>&1
 
 echo "[INFO] Autologin finished!"
-echo "[Login] $(date)" >> log.txt
+echo "[DONE] $(date)" >> log.txt
 rm login_*
