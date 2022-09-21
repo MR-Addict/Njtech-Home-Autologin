@@ -11,7 +11,7 @@ elif ping -w 1 -c 1 njtech.edu.cn > /dev/null 2>&1; then
   echo "[INFO] Execute autologin script..."
 else
   echo "[WARN] Cannot access Njtech-Home!"
-  echo "[FAIL] $(date)" >> log.txt && exit
+  echo "[FAIL] Cannot access Njtech-Home!" >> log.txt && exit
 fi
 
 # Store data in login_get_html.html and login_cookie.txt
@@ -30,15 +30,16 @@ cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 form_data="username="$username"&password="$password"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=提交"
 
 # post data
-echo "[INFO] Sending data to remote host..."
+echo "[INFO] Post data to remote host..."
 curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html > /dev/null 2>&1
 
 # check wheather login succeed
 if grep -q oauth2/logout login_post_html.html ;then
-  echo "[INFO] Login Succeeded!"
-  echo "[DONE] $(date)" >> log.txt
+  echo "[INFO] Autologin Succeeded!"
+  echo "[DONE] Autologin Succeeded!" >> log.txt
 else
-  echo "[WARN] Login Failed!"
-  echo "[FAIL] $(date)" >> log.txt
+  echo "[WARN] Autologin Failed!"
+  echo "[FAIL] Autologin Failed!" >> log.txt
 fi
 rm login_*
+
