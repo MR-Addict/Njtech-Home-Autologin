@@ -27,3 +27,7 @@ channelshow="中国电信&channel=@telecom"
 ```
 
 > 提示：如果你是Linux用户，相信对开机自启或者定时任务因该不陌生，可以自行部署。
+
+## 3. 说明
+
+了解本项目的其他分支情况可参考此[Wiki页面](https://github.com/MR-Addict/Njtech-Home-Autologin/wiki)
