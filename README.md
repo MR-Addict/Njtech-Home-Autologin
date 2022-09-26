@@ -59,3 +59,7 @@
 如果你不想手动点击脚本，你可以将其设置为开机自启。有关如何设置开机自启大家可以自行百度，目前版本还不支持自动配置开机自启。
 
 > 注意：本项目仅适用于Windows
+
+## 4. 说明
+
+了解本项目的其他分支情况可参考此[Wiki页面](https://github.com/MR-Addict/Njtech-Home-Autologin/wiki)
