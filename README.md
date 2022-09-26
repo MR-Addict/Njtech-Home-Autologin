@@ -73,6 +73,4 @@ Your browser auto directed disabled
 
 ## 4. 说明
 
-有任何问题和建议都欢迎大家`Issue`或`Pull request`。
-
-> 注意：本脚本是在`Windows Powershel 5.1`环境下测试的，更高或者更低都有可能存在部分命令不兼容的情况。使用Windows 10、11系统的话不必担心这个问题，默认的的Windows Powershell就是5.1版本。
+了解本项目的其他分支情况可参考此[Wiki页面](https://github.com/MR-Addict/Njtech-Home-Autologin/wiki)
