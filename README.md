@@ -61,3 +61,7 @@ pyinstaller -F autologin.py
 - [x] 联网前先关闭电脑的手动代理
 - [x] 登录结束后检测网络是否连接成功
 - [x] 关闭跳转的Microsoft Edge浏览器
+
+## 4. 说明
+
+了解本项目的其他分支情况可参考此[Wiki页面](https://github.com/MR-Addict/Njtech-Home-Autologin/wiki)
