@@ -23,7 +23,7 @@ curl -skL $geturl -c login_cookie.txt -o login_get_html.html
 
 useragent="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55"
 
-lt=$(cat login_get_html.html|grep -o -E 'LT-.{39}'|head -1|tail -c 43)
+lt=$(cat login_get_html.html|grep -o -E 'LT-.{37}'|head -1|tail -c 43)
 execution=$(cat login_get_html.html|grep -o -E 'name="execution" value=".{4}'|head -1|tail -c 5)
 insert_cookie=$(grep "insert_cookie" login_cookie.txt|awk '{print $7}')
 JSESSIONID=$(grep "JSESSIONID" login_cookie.txt|awk '{print $7}'|head -1)
@@ -34,7 +34,7 @@ form_data="username="$username"&password="$password"&channelshow="$channelshow"&
 
 # post data
 echo "[INFO] $(date) Post data to remote host..."
-curl -kL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html > /dev/null 2>&1
+curl -skL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html
 
 # check wheather login succeed
 if grep -q oauth2/logout login_post_html.html ;then
