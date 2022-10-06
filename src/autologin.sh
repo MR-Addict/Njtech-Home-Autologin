@@ -28,9 +28,12 @@ execution=$(cat login_get_html.html|grep -o -E 'name="execution" value=".{4}'|he
 insert_cookie=$(grep "insert_cookie" login_cookie.txt|awk '{print $7}')
 JSESSIONID=$(grep "JSESSIONID" login_cookie.txt|awk '{print $7}'|head -1)
 posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|head -1)
-
 cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
-form_data="username="$username"&password="$password"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=提交"
+
+curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
+captcha=$(curl -skL http://202.119.245.12:51080 -F type=local -F captcha=@captcha.jpg | jq -r '.message')
+
+form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit"
 
 # post data
 echo "[INFO] $(date) Post data to remote host..."
@@ -44,4 +47,6 @@ else
   echo "[WARN] $(date) Autologin Failed!"
   echo "[FAIL] $(date) Autologin Failed!" >> log.txt
 fi
+
 rm login_*
+rm captcha.jpg
