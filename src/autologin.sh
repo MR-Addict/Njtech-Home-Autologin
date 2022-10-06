@@ -31,7 +31,7 @@ posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|he
 cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 
 curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
-captcha=$(curl -skL http://202.119.245.12:51080 -F type=local -F captcha=@captcha.jpg | jq -r '.message')
+captcha=$(curl -skL http://202.119.245.12:45547 -F type=local -F captcha=@captcha.jpg | jq -r '.message')
 
 form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit"
 
