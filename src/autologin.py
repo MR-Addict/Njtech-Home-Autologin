@@ -22,7 +22,7 @@ useragent = {
 
 captchapath = "./captcha.jpg"
 captchageturl = "https://u.njtech.edu.cn/cas/captcha.jpg"
-captchaapiurl = "http://localhost:8000"
+captchaapiurl = "http://202.119.245.12:45547"
 # 1.3 implement a Session object
 s = requests.Session()
 s.headers.update(useragent)
