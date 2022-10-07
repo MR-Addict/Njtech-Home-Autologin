@@ -86,22 +86,24 @@ if (checkWiFiConnection("baidu.com")) {
 # 7.1 Load profile information
 $MyProfile = Get-Content $PSScriptRoot\profile.json -Raw | ConvertFrom-Json
 # 7.2 Provider hash table and user agent
-$provider = @{
-    "cmcc"    = "中国移动"
-    "telecom" = "中国电信"
-}
+$provider = @{"cmcc" = "中国移动"; "telecom" = "中国电信" }
 $UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.41"
 # 7.3 Get and post URL
 $geturl = "https://i.njtech.edu.cn"
 $posturl = "https://u.njtech.edu.cn"
+$captchaapiurl = "http://202.119.245.12:45547"
 # 7.4 Send post data
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Sending your profile to host..."
 $r = Invoke-WebRequest -Uri $geturl -SessionVariable Session -UserAgent $UserAgent
+Invoke-WebRequest -Uri " https://u.njtech.edu.cn/cas/captcha.jpg" -WebSession $Session -OutFile captcha.jpg
 $form = $r.Forms[0]
 $form.Fields["username"] = $MyProfile.username
 $form.Fields["password"] = $MyProfile.password
 $form.Fields["channelshow"] = $provider[$MyProfile.provider]
 $form.Fields["channel"] = '@' + $MyProfile.provider
+$form.Fields["captcha"] = (cmd /c "curl -skL $captchaapiurl -F captcha=@captcha.jpg" | ConvertFrom-Json).message
+Remove-Item captcha.jpg
+
 $posturl = $posturl + $form.Action
 $r = Invoke-WebRequest -Uri $posturl -WebSession $Session -Method Post -Body $form -UserAgent $UserAgent
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
