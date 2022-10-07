@@ -7,7 +7,7 @@ channelshow="中国电信&channel=@telecom"
 
 posturl="https://u.njtech.edu.cn"
 geturl="https://i.njtech.edu.cn"
-captchaapiurl="http://192.168.1.2:45547"
+captchaapiurl="http://202.119.245.12:45547"
 
 if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
   echo "[WARN] $(date) WiFi already connected!" && exit
