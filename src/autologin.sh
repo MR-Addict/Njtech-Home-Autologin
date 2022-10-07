@@ -7,6 +7,7 @@ channelshow="中国电信&channel=@telecom"
 
 posturl="https://u.njtech.edu.cn"
 geturl="https://i.njtech.edu.cn"
+captchaapiurl="http://192.168.1.2:45547"
 
 if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
   echo "[WARN] $(date) WiFi already connected!" && exit
@@ -31,16 +32,17 @@ posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|he
 cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 
 curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
-captcha=$(curl -skL http://202.119.245.12:45547 -F type=local -F captcha=@captcha.jpg | jq -r '.message')
+captcha=$(curl -skL $captchaapiurl -F captcha=@captcha.jpg | sed -E 's/.*"message":"?([^,"]*)"?.*/\1/')
 
-form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit"
+form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=登录"
 
 # post data
 echo "[INFO] $(date) Post data to remote host..."
 curl -skL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html
 
 # check wheather login succeed
-if grep -q oauth2/logout login_post_html.html ;then
+sleep 1
+if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
   echo "[INFO] $(date) Autologin Succeeded!"
   echo "[DONE] $(date) Autologin Succeeded!" >> log.txt
 else
