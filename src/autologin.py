@@ -1,4 +1,5 @@
 # 0. Import packages
+import os
 import json
 import shutil
 import requests
@@ -44,6 +45,7 @@ with s.get(captchageturl, stream=True) as r:
         shutil.copyfileobj(r.raw, f)
 res = s.post(captchaapiurl, files={"captcha": open(captchapath, 'rb')})
 captcha = json.loads(res.text)["message"]
+os.remove(captchapath)
 # 2.2 Prepare post payload
 payload = {
     'username': profile["username"],
