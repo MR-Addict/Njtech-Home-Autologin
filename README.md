@@ -69,7 +69,7 @@ Your browser auto directed disabled
 
 如果你配置了开机自启和解锁自启，那么本脚本会在相应事件下自动执行。
 
-![Preview-GIF](autologin.gif)
+![Preview-GIF](docs/autologin.gif)
 
 ## 4. 说明
 

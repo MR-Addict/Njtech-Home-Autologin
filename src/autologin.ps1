@@ -22,23 +22,6 @@ function isNjtechExist {
     return $false
 }
 
-function startProcess {
-    # Start QQ and Clash
-    # $Processes = (Get-Process).ProcessName
-    # if ($Processes -notcontains "QQ") {
-    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting QQ..."
-    #     Start-Process -FilePath "QQ" -RedirectStandardError Out-Null
-    # }
-    # if ($Processes -notcontains "Clash for Windows") {
-    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Clash For Windows..."
-    #     Start-Process -FilePath "Clash for Windows" -RedirectStandardError Out-Null
-    # }
-    # if ($Processes -notcontains "telegram") {
-    #     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Starting Telegram..."
-    #     Telegram -startintray
-    # }
-}
-
 # 1. Check profile file
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Loading login profile..."
 if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
@@ -94,9 +77,9 @@ $posturl = "https://u.njtech.edu.cn"
 $captchaapiurl = "http://202.119.245.12:45547"
 # 7.4 Send post data
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Sending your profile to host..."
-$r = Invoke-WebRequest -Uri $geturl -SessionVariable Session -UserAgent $UserAgent
+$res = Invoke-WebRequest -Uri $geturl -SessionVariable Session -UserAgent $UserAgent
 Invoke-WebRequest -Uri " https://u.njtech.edu.cn/cas/captcha.jpg" -WebSession $Session -OutFile captcha.jpg
-$form = $r.Forms[0]
+$form = $res.Forms[0]
 $form.Fields["username"] = $MyProfile.username
 $form.Fields["password"] = $MyProfile.password
 $form.Fields["channelshow"] = $provider[$MyProfile.provider]
@@ -105,12 +88,11 @@ $form.Fields["captcha"] = (cmd /c "curl -skL $captchaapiurl -F captcha=@captcha.
 Remove-Item captcha.jpg
 
 $posturl = $posturl + $form.Action
-$r = Invoke-WebRequest -Uri $posturl -WebSession $Session -Method Post -Body $form -UserAgent $UserAgent
+$res = Invoke-WebRequest -Uri $posturl -WebSession $Session -Method Post -Body $form -UserAgent $UserAgent
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
 
 # 8. Check WiFi Connection
-Start-Sleep -Seconds 1
-if (checkWiFiConnection("baidu.com")) {
+if ($res -Match 'user-msg-info') {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi connected successfully."
 }
 else {
@@ -118,17 +100,6 @@ else {
     Exit
 }
 
-# 9. Disconnect and connect WiFi
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Disconnecting WiFi..."
-Start-Sleep -Seconds 1
-netsh wlan disconnect | Out-Null
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Connecting WiFi again..."
-Start-Sleep -Seconds 1
-netsh wlan connect name="Njtech-Home" interface="WLAN" | Out-Null
-
-# 10. Enable proxy and start process
-startProcess
-
-# 11. Exit Script
+# 9. Exit Script
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "All done, exit right now."
 Exit
