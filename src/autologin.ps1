@@ -41,7 +41,6 @@ if ( $ProxyProperty.ProxyEnable -and $ProxyProperty.ProxyOverride -notmatch "njt
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
-    startProcess
     Exit
 }
 
@@ -61,7 +60,6 @@ while (!(checkWiFiConnection("u.njtech.edu.cn"))) {}
 Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Checking whether you are connected..."
 if (checkWiFiConnection("baidu.com")) {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi already connected, exit right now."
-    startProcess
     Exit
 }
 
