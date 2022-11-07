@@ -24,25 +24,24 @@ curl -skL $geturl -c login_cookie.txt -o login_get_html.html
 
 useragent="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55"
 
-lt=$(cat login_get_html.html|grep -o -E 'LT-.{37}'|head -1|tail -c 43)
-execution=$(cat login_get_html.html|grep -o -E 'name="execution" value=".{4}'|head -1|tail -c 5)
-insert_cookie=$(grep "insert_cookie" login_cookie.txt|awk '{print $7}')
-JSESSIONID=$(grep "JSESSIONID" login_cookie.txt|awk '{print $7}'|head -1)
+lt=$(grep 'name="lt" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
+execution=$(grep 'name="execution" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
+insert_cookie=$(grep "insert_cookie" login_cookie.txt | awk '{print $7}')
+JSESSIONID=$(grep "JSESSIONID" login_cookie.txt | awk '{print $7}'|head -1)
 posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|head -1)
 cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 
 curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
 captcha=$(curl -skL $captchaapiurl -F captcha=@captcha.jpg | sed -E 's/.*"message":"?([^,"]*)"?.*/\1/')
 
-form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=登录"
+form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit"
 
 # post data
 echo "[INFO] $(date) Post data to remote host..."
 curl -skL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html
 
 # check wheather login succeed
-sleep 1
-if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
+if grep -q oauth2/logout login_post_html.html ;then
   echo "[INFO] $(date) Autologin Succeeded!"
   echo "[DONE] $(date) Autologin Succeeded!" >> log.txt
 else
