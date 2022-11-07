@@ -33,7 +33,7 @@ if (!(Test-Path -Path $PSScriptRoot\profile.json)) {
 $ProxyProperty = Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 if ( $ProxyProperty.ProxyEnable -and $ProxyProperty.ProxyOverride -notmatch "njtech.edu.cn") {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Adding proxy exception..."
-    $ProxyExceptionList = "*njtech.edu.cn;" + $ProxyProperty.ProxyOverride
+    $ProxyExceptionList = "*.njtech.edu.cn;" + $ProxyProperty.ProxyOverride
     $ProxyProperty | Set-ItemProperty -Name "ProxyOverride" -Value $ProxyExceptionList
 }
 
