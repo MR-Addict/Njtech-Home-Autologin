@@ -34,7 +34,7 @@ cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
 curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
 captcha=$(curl -skL $captchaapiurl -F captcha=@captcha.jpg | sed -E 's/.*"message":"?([^,"]*)"?.*/\1/')
 
-form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit"
+form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=登录"
 
 # post data
 echo "[INFO] $(date) Post data to remote host..."
