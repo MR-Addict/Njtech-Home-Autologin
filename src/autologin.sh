@@ -9,7 +9,7 @@ posturl="https://u.njtech.edu.cn"
 geturl="https://i.njtech.edu.cn"
 captchaapiurl="http://202.119.245.12:45547"
 
-if ping -w 1 -c 1 baidu.com > /dev/null 2>&1; then
+if curl -s baidu.com | grep -q html ;then
   echo "[WARN] $(date) WiFi already connected!" && exit
 elif ping -w 1 -c 1 njtech.edu.cn > /dev/null 2>&1; then
   echo "[INFO] $(date) Execute autologin script..."
