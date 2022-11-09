@@ -24,26 +24,26 @@ captchapath = "./captcha.jpg"
 captchageturl = "https://u.njtech.edu.cn/cas/captcha.jpg"
 captchaapiurl = "http://202.119.245.12:45547"
 # 1.3 implement a Session object
-s = requests.Session()
-s.headers.update(useragent)
+session = requests.Session()
+session.headers.update(useragent)
 # 1.5 get login page
 print("[INFO] Sending get requests...")
-r = s.get(geturl)
+res = session.get(geturl)
 
 # 2. Handle response
 # 2.1 Find lt and execution payload information using BeautifulSoup
 print("[INFO] Parsing response html...")
-soup = BeautifulSoup(r.content, "html.parser")
+soup = BeautifulSoup(res.content, "html.parser")
 lt = soup.find('input', attrs={'name': 'lt'})['value']
 execution = soup.find('input', attrs={'name': 'execution'})['value']
 _eventId = soup.find('input', attrs={'name': '_eventId'})['value']
 login = soup.find('input', attrs={'name': 'login'})['value']
 posturl = posturl + soup.find('form', id='fm1').get('action')
 
-with s.get(captchageturl, stream=True) as r:
+with session.get(captchageturl, stream=True) as res:
     with open("captcha.jpg", 'wb') as f:
-        shutil.copyfileobj(r.raw, f)
-res = s.post(captchaapiurl, files={"captcha": open(captchapath, 'rb')})
+        shutil.copyfileobj(res.raw, f)
+res = session.post(captchaapiurl, files={"captcha": open(captchapath, 'rb')})
 captcha = json.loads(res.text)["message"]
 os.remove(captchapath)
 # 2.2 Prepare post payload
@@ -60,8 +60,12 @@ payload = {
 }
 # 2.3 Post data to host
 print("[INFO] Sending your profile to host...")
-r = s.post(posturl, data=payload)
+res = session.post(posturl, data=payload)
+session.close()
 
-# 3. close Session
-print("[INFO] Auto login finished!")
-s.close()
+# 3. Check WiFi connection
+soup = BeautifulSoup(res.content, "html.parser")
+if soup.find("div", {"class": "user-msg-info"}) is not None:
+    print("[INFO] Autologin succeed!")
+else:
+    print("[INFO] Autologin failed!")

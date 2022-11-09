@@ -51,15 +51,6 @@ if %isConnect%==1 (
 echo Running script...
 python autologin.py >nul 2>nul
 
-:: Check whether WiFi is connected
-call :CheckWiFiConnection isConnect
-if %isConnect%==1 (
-    echo Connection succeeded.
-) else (
-    echo Connection failed, please try again manually.
-    exit
-)
-
 :: Disconnect and then connect WiFi again
 timeout 1 /nobreak >nul 2>nul
 echo Disconnecting WiFi...
