@@ -87,7 +87,6 @@ Remove-Item captcha.jpg
 
 $posturl = $posturl + $form.Action
 $res = Invoke-WebRequest -Uri $posturl -WebSession $Session -Method Post -Body $form -UserAgent $UserAgent
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "Data Sending finished."
 
 # 8. Check WiFi Connection
 if ($res -Match 'user-msg-info') {
@@ -99,5 +98,4 @@ else {
 }
 
 # 9. Exit Script
-Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "All done, exit right now."
 Exit
