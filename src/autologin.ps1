@@ -93,8 +93,7 @@ if ($res -Match 'user-msg-info') {
     Write-Host "[INFO] " -ForegroundColor Green -NoNewline; Write-Host "WiFi connected successfully."
 }
 else {
-    Write-Host "[ERROR] " -ForegroundColor Red -NoNewline; Write-Host "WiFi connected failed, exit right now."
-    Exit
+    Write-Host "[ERROR] " -ForegroundColor Red -NoNewline; Write-Host "WiFi connected failed."
 }
 
 # 9. Exit Script
