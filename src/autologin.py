@@ -68,6 +68,6 @@ if __name__ == '__main__':
         home = autologin(data["username"], data["password"], data["provider"])
         success = home.login()
         if success:
-            print("Login successeded!")
+            print("Login succeeded!")
         else:
             print("Login failed!")
