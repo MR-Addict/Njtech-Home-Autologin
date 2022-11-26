@@ -19,7 +19,7 @@ class autologin():
             show_ad=False, import_onnx_path="models/captcha.onnx",
             charsets_path="models/charsets.json")
 
-    def connect(self):
+    def login(self):
         # 1. Variables
         get_url = "https://i.njtech.edu.cn"
         post_url = "https://u.njtech.edu.cn"
@@ -33,7 +33,7 @@ class autologin():
         try:
             res = session.get(get_url)
         except:
-            "[ERROR] Cannot access network!"
+            return False
         # 3. Parse html
         soup = BeautifulSoup(res.content, "html.parser")
         lt = soup.find('input', attrs={'name': 'lt'})['value']
@@ -57,13 +57,17 @@ class autologin():
         soup = BeautifulSoup(res.content, "html.parser")
         session.close()
         if soup.find("div", {"class": "user-msg-info"}) is not None:
-            return "[INFO] Autologin Succeed!"
+            return True
         else:
-            return "[INFO] Autologin Failed!"
+            return False
 
 
 if __name__ == '__main__':
     with open("profile.json", 'r') as f:
         data = json.load(f)
-        login = autologin(data["username"], data["password"], data["provider"])
-        print(login.connect())
+        home = autologin(data["username"], data["password"], data["provider"])
+        success = home.login()
+        if success:
+            print("Login successeded!")
+        else:
+            print("Login failed!")
