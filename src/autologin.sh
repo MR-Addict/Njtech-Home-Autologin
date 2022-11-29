@@ -1,53 +1,59 @@
 #! /bin/bash
 
-username="your_username"
-password="your_password"
-channelshow="中国电信&channel=@telecom"
-#channelshow="中国移动&channel=@cmcc"
+# check wifi connection
+function check_wifi_connection {
+  if curl -s baidu.com | grep -q html ;then
+    echo "[WARN] $(date) WiFi already connected!"
+    return 0
+  elif ping -w 1 -c 1 njtech.edu.cn > /dev/null 2>&1; then
+    echo "[INFO] $(date) Execute autologin script..."
+    return 1
+  else
+    echo "[WARN] $(date) Cannot access Njtech-Home!"
+    echo "[FAIL] $(date) Cannot access Njtech-Home!" >> log.txt
+    return 0
+  fi
+}
 
-posturl="https://u.njtech.edu.cn"
-geturl="https://i.njtech.edu.cn"
-captchaapiurl="http://202.119.245.12:45547"
+# autologin
+function autologin {
+  # variable
+  username="your_username"
+  password="your_password"
+  channelshow="中国电信&channel=@telecom"
+  #channelshow="中国移动&channel=@cmcc"
+  posturl="https://u.njtech.edu.cn"
+  geturl="https://i.njtech.edu.cn"
+  captchaapiurl="http://202.119.245.12:45547"
+  useragent="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55"
+  # parse html
+  echo "[INFO] $(date) Fetching data from server..."
+  curl -skL $geturl -c login_cookie.txt -o login_get_html.html
+  lt=$(grep 'name="lt" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
+  execution=$(grep 'name="execution" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
+  insert_cookie=$(grep "insert_cookie" login_cookie.txt | awk '{print $7}')
+  JSESSIONID=$(grep "JSESSIONID" login_cookie.txt | awk '{print $7}'|head -1)
+  posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|head -1)
+  cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
+  # fetch captcha from api
+  curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
+  captcha=$(curl -skL $captchaapiurl -F captcha=@captcha.jpg | sed -E 's/.*"message":"?([^,"]*)"?.*/\1/')
+  # combile form data
+  form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=登录"
+  # post data
+  echo "[INFO] $(date) Post data to server..."
+  curl -skL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html
+  # check wheather login succeed
+  if grep -q oauth2/logout login_post_html.html ;then
+    echo "[INFO] $(date) Autologin Succeeded!"
+    echo "[DONE] $(date) Autologin Succeeded!" >> log.txt
+  else
+    echo "[WARN] $(date) Autologin Failed!"
+    echo "[FAIL] $(date) Autologin Failed!" >> log.txt
+  fi
+  # remove temp files
+  rm login_*
+  rm captcha.jpg
+}
 
-if curl -s baidu.com | grep -q html ;then
-  echo "[WARN] $(date) WiFi already connected!" && exit
-elif ping -w 1 -c 1 njtech.edu.cn > /dev/null 2>&1; then
-  echo "[INFO] $(date) Execute autologin script..."
-else
-  echo "[WARN] $(date) Cannot access Njtech-Home!"
-  echo "[FAIL] $(date) Cannot access Njtech-Home!" >> log.txt && exit
-fi
-
-# Store data in login_get_html.html and login_cookie.txt
-echo "[INFO] $(date) Fetching data from remote host..."
-curl -skL $geturl -c login_cookie.txt -o login_get_html.html
-
-useragent="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55"
-
-lt=$(grep 'name="lt" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
-execution=$(grep 'name="execution" value' login_get_html.html | awk -F"\"" '{print $6}' | head -1)
-insert_cookie=$(grep "insert_cookie" login_cookie.txt | awk '{print $7}')
-JSESSIONID=$(grep "JSESSIONID" login_cookie.txt | awk '{print $7}'|head -1)
-posturl=$posturl$(grep "action" login_get_html.html | awk -F"\"" '{print $6}'|head -1)
-cookie="Cookie: JSESSIONID="$JSESSIONID"; insert_cookie="$insert_cookie
-
-curl -skL https://u.njtech.edu.cn/cas/captcha.jpg -H "$cookie" -o captcha.jpg
-captcha=$(curl -skL $captchaapiurl -F captcha=@captcha.jpg | sed -E 's/.*"message":"?([^,"]*)"?.*/\1/')
-
-form_data="username="$username"&password="$password"&captcha="$captcha"&channelshow="$channelshow"&lt="$lt"&execution="$execution"&_eventId=submit&login=登录"
-
-# post data
-echo "[INFO] $(date) Post data to remote host..."
-curl -skL -X POST "$posturl" -H "$useragent" -H "$cookie" -d "$form_data" -o login_post_html.html
-
-# check wheather login succeed
-if grep -q oauth2/logout login_post_html.html ;then
-  echo "[INFO] $(date) Autologin Succeeded!"
-  echo "[DONE] $(date) Autologin Succeeded!" >> log.txt
-else
-  echo "[WARN] $(date) Autologin Failed!"
-  echo "[FAIL] $(date) Autologin Failed!" >> log.txt
-fi
-
-rm login_*
-rm captcha.jpg
+check_wifi_connection || autologin
