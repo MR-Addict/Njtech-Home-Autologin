@@ -1,6 +1,4 @@
-import os
 import json
-import shutil
 import ddddocr
 import requests
 from bs4 import BeautifulSoup
@@ -15,7 +13,7 @@ class autologin():
             self.channelshow = "中国移动"
         elif provider == "telecom":
             self.channelshow = "中国电信"
-        self.ocr = ocr = ddddocr.DdddOcr(
+        self.ocr = ddddocr.DdddOcr(
             show_ad=False, import_onnx_path="models/captcha.onnx",
             charsets_path="models/charsets.json")
 
